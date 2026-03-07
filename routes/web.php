@@ -3,42 +3,60 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+// Import and Alias the controllers so PHP knows which is which
+use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
+use App\Http\Controllers\Doctor\DashboardController as DoctorDashboard;
+use App\Http\Controllers\DataEntry\DashboardController as DataEntryDashboard;
+use App\Http\Controllers\Admin\UserController;
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-// DEFAULT DASHBOARD (Redirects based on role)
+// MAIN DASHBOARD REDIRECT
 Route::get('/dashboard', function () {
     $user = auth()->user();
-    if ($user->role === 'system_admin') return redirect()->route('admin.dashboard');
-    if ($user->role === 'doctor') return redirect()->route('doctor.dashboard');
-    if ($user->role === 'data_entry') return redirect()->route('data_entry.dashboard');
+    return match($user->role) {
+        'system_admin' => redirect()->route('admin.dashboard'),
+        'doctor'       => redirect()->route('doctor.dashboard'),
+        'data_entry'   => redirect()->route('data_entry.dashboard'),
+        default        => abort(403)
+    };
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // AUTHENTICATED ROUTES
 Route::middleware('auth')->group(function () {
-    
-    // System Admin Routes
-    Route::middleware('role:system_admin')->group(function () {
-        Route::get('/admin/dashboard', function () {
-            return view('admin_dashboard');
-        })->name('admin.dashboard');
+
+    // --- SYSTEM ADMIN ---
+    Route::middleware('role:system_admin')
+        ->prefix('admin')
+        ->name('admin.')
+        ->group(function () {
+            // Uses Admin/DashboardController
+            Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
+            Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+            Route::post('/users', [UserController::class, 'store'])->name('users.store');
     });
 
-    // Doctor Routes
-    Route::middleware('role:doctor')->group(function () {
-        Route::get('/doctor/dashboard', function () {
-            return view('doctor_dashboard');
-        })->name('doctor.dashboard');
+    // --- DOCTOR ---
+    Route::middleware('role:doctor')
+        ->prefix('doctor')
+        ->name('doctor.')
+        ->group(function () {
+            // Uses Doctor/DashboardController
+            Route::get('/dashboard', [DoctorDashboard::class, 'index'])->name('dashboard');
     });
 
-    // Data Entry Routes
-    Route::middleware('role:data_entry')->group(function () {
-        Route::get('/data-entry/dashboard', function () {
-            return view('data_entry_dashboard');
-        })->name('data_entry.dashboard');
+    // --- DATA ENTRY ---
+    Route::middleware('role:data_entry')
+        ->prefix('data-entry')
+        ->name('data_entry.')
+        ->group(function () {
+            // Uses DataEntry/DashboardController
+            Route::get('/dashboard', [DataEntryDashboard::class, 'index'])->name('dashboard');
     });
 
+    // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
