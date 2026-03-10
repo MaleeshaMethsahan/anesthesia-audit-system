@@ -7,6 +7,7 @@ use App\Http\Controllers\Doctor\DashboardController as DoctorDashboard;
 use App\Http\Controllers\DataEntry\DashboardController as DataEntryDashboard;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LogController;
+use App\Http\Controllers\DataEntry\RecordController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
             // Uses DataEntry/DashboardController
             Route::get('/dashboard', [DataEntryDashboard::class, 'index'])->name('dashboard');
+            Route::get('/records', [RecordController::class, 'index'])->name('records.index');
+            Route::get('/records/{surgeryId}', [RecordController::class, 'show'])->name('records.show');
     });
 
     // Profile Routes
