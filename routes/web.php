@@ -2,12 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
-// Import and Alias the controllers so PHP knows which is which
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Doctor\DashboardController as DoctorDashboard;
 use App\Http\Controllers\DataEntry\DashboardController as DataEntryDashboard;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\LogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,6 +35,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
             Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
             Route::post('/users', [UserController::class, 'store'])->name('users.store');
+            Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
     });
 
     // --- DOCTOR ---
@@ -61,5 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 
 require __DIR__.'/auth.php';
