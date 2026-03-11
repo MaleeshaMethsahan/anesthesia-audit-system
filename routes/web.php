@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
             // Uses Doctor/DashboardController
             Route::get('/dashboard', [DoctorDashboard::class, 'index'])->name('dashboard');
+            Route::get('/records',[RecordController::class, 'index'])->name('records.index');
     });
 
     // --- DATA ENTRY ---
