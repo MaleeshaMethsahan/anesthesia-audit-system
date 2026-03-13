@@ -4,7 +4,7 @@
             <h2 class="font-bold text-xl text-gray-800 leading-tight uppercase tracking-wider">
                 Record #{{ $surgery->surgery_id }}
             </h2>
-            <a href="{{ route('data_entry.records.index') }}" class="text-sm font-semibold px-3 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-100">
+            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.records.index') : route('data_entry.records.index') }}" class="text-sm font-semibold px-3 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-100">
                 Back to Records
             </a>
         </div>

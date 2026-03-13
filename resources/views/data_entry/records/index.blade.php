@@ -4,7 +4,8 @@
             <h2 class="font-bold text-xl text-gray-800 leading-tight uppercase tracking-wider">
                 {{ __('Anaesthesia Audit Database') }}
             </h2>
-            <a href="#" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow">
+            <!-- Dynamically route the "ADD NEW RECORD" button based on the logged-in user's role (doctor vs data_entry) -->
+            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.audit-form.create') : route('data_entry.audit-form.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow">
                 + ADD NEW RECORD
             </a>
         </div>
@@ -142,7 +143,8 @@
                                     <!-- Actions -->
                                     <td class="px-4 py-4 text-center">
                                         <div class="flex flex-col gap-2 items-center">
-                                            <a href="{{ route('data_entry.records.show', $row->surgery_id) }}" class="text-[0.7rem] font-bold px-3 py-1 border border-blue-600 text-blue-600 rounded hover:bg-blue-600 hover:text-white transition w-full text-center">
+                                            <!-- Dynamically resolve the view route using the user's role -->
+                                            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.records.show', $row->surgery_id) : route('data_entry.records.show', $row->surgery_id) }}" class="text-[0.7rem] font-bold px-3 py-1 border border-blue-600 text-blue-600 rounded hover:bg-blue-600 hover:text-white transition w-full text-center">
                                                 VIEW
                                             </a>
                                             <a href="#" onclick="return confirm('ARE YOU SURE? This will permanently delete this record.');" class="text-[0.7rem] font-bold px-3 py-1 border border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white transition w-full text-center">
