@@ -15,6 +15,11 @@
                 
             </div>
             <div>
+                <!-- Link to access the form for adding a new anesthesia patient record -->
+                <a href="{{ route('data_entry.audit-form.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
+                    Add Patient Records
+                </a>
+                <!-- Link to view the table of existing clinical records -->
                 <a href="{{ route('data_entry.records.index') }}" class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
                     View Clinical Records
                 </a>

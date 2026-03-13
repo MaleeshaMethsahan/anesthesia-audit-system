@@ -16,6 +16,16 @@
                     </a>
                 </div>
             </div>
+            <div class="mt-4">
+                <!-- Navigation link for doctors to add a new audit record -->
+                <a href="{{ route('doctor.audit-form.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
+                    Add Patient Records
+                </a>
+                <!-- Navigation link for doctors to view all existing clinical records -->
+                <a href="{{ route('doctor.records.index') }}" class="inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
+                    View Clinical Records
+                </a>
+            </div>
         </div>
     </div>
 </x-app-layout>
