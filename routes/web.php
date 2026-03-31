@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
             // View the list of clinical records and specific details of a record
             Route::get('/records', [RecordController::class, 'index'])->name('records.index');
             Route::get('/records/{surgeryId}', [RecordController::class, 'show'])->name('records.show');
+            Route::delete('/records/{surgeryId}', [RecordController::class, 'destroy'])->name('records.destroy');
 
             // Access and submit the Anesthesia Audit form
             Route::get('/audit-form', [AuditFormController::class, 'create'])->name('audit-form.create');
@@ -68,6 +69,7 @@ Route::middleware('auth')->group(function () {
             // View the list of clinical records and specific details of a record
             Route::get('/records', [RecordController::class, 'index'])->name('records.index');
             Route::get('/records/{surgeryId}', [RecordController::class, 'show'])->name('records.show');
+            Route::delete('/records/{surgeryId}', [RecordController::class, 'destroy'])->name('records.destroy');
 
             // Access and submit the Anesthesia Audit form
             Route::get('/audit-form', [AuditFormController::class, 'create'])->name('audit-form.create');

@@ -53,6 +53,6 @@ class RecordController extends Controller
                 ->get();
         }
 
-        return view('doctor.records.index', compact('surgeries'));
+        return view('records.index', compact('surgeries'));
     }
 }

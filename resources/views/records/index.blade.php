@@ -2,9 +2,10 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-bold text-xl text-gray-800 leading-tight uppercase tracking-wider">
-                {{ __('Anaesthesia Audit Database') }}
+                Anaesthesia Audit Database
             </h2>
-            <a href="#" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow">
+            <!-- Dynamically route the "ADD NEW RECORD" button based on the logged-in user's role (doctor vs data_entry) -->
+            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.audit-form.create') : route('data_entry.audit-form.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow">
                 + ADD NEW RECORD
             </a>
         </div>
@@ -51,7 +52,7 @@
                     <table class="w-full text-left text-sm whitespace-nowrap">
                         <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-100 text-gray-600 text-xs font-bold">
                             <tr>
-                                <th class="px-4 py-3">ID</th>
+                                <th class="px-4 py-3">PHN</th>
                                 <th class="px-4 py-3">Patient</th>
                                 <th class="px-4 py-3">Operation Details</th>
                                 <th class="px-4 py-3">Conditions</th>
@@ -65,7 +66,7 @@
                         <tbody class="divide-y divide-gray-100">
                             @forelse($surgeries as $row)
                                 <tr class="hover:bg-gray-50 align-top">
-                                    <td class="px-4 py-4 font-bold text-gray-400">#{{ $row->surgery_id }}</td>
+                                    <td class="px-4 py-4 font-bold text-gray-700">{{ $row->phn ?? '-' }}</td>
                                     
                                     <!-- Patient -->
                                     <td class="px-4 py-4">
@@ -142,12 +143,17 @@
                                     <!-- Actions -->
                                     <td class="px-4 py-4 text-center">
                                         <div class="flex flex-col gap-2 items-center">
-                                            <a href="{{ route('data_entry.records.show', $row->surgery_id) }}" class="text-[0.7rem] font-bold px-3 py-1 border border-blue-600 text-blue-600 rounded hover:bg-blue-600 hover:text-white transition w-full text-center">
+                                            <!-- Dynamically resolve the view route using the user's role -->
+                                            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.records.show', $row->surgery_id) : route('data_entry.records.show', $row->surgery_id) }}" class="text-[0.7rem] font-bold px-3 py-1 border border-blue-600 text-blue-600 rounded hover:bg-blue-600 hover:text-white transition w-full text-center">
                                                 VIEW
                                             </a>
-                                            <a href="#" onclick="return confirm('ARE YOU SURE? This will permanently delete this record.');" class="text-[0.7rem] font-bold px-3 py-1 border border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white transition w-full text-center">
-                                                DELETE
-                                            </a>
+                                            <form method="POST" action="{{ auth()->user()->role === 'doctor' ? route('doctor.records.destroy', $row->surgery_id) : route('data_entry.records.destroy', $row->surgery_id) }}" class="w-full" onsubmit="return confirm('ARE YOU SURE? This will permanently delete this record.');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-[0.7rem] font-bold px-3 py-1 border border-red-600 text-red-600 rounded hover:bg-red-600 hover:text-white transition w-full text-center">
+                                                    DELETE
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
