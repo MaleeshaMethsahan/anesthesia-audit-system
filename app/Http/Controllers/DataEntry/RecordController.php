@@ -16,7 +16,7 @@ class RecordController extends Controller
             ->select(
                 's.surgery_id', 's.operation_name', 's.surgical_specialty', 
                 's.surgery_type', 's.date_of_surgery', 's.asa_grade', 's.post_op_admission',
-                'p.patient_id', 'p.name', 'p.age', 'p.sex', 'p.bht'
+                'p.patient_id', 'p.phn', 'p.name', 'p.age', 'p.sex', 'p.bht'
             )
             ->orderBy('s.surgery_id', 'desc')
             ->get();
@@ -26,7 +26,7 @@ class RecordController extends Controller
             $this->hydrateSurgeryDetails($row);
         }
 
-        return view('data_entry.records.index', compact('surgeries'));
+        return view('records.index', compact('surgeries'));
     }
 
     public function show(int $surgeryId)
@@ -45,7 +45,35 @@ class RecordController extends Controller
 
         $this->hydrateSurgeryDetails($surgery);
 
-        return view('data_entry.records.show', compact('surgery'));
+        return view('records.show', compact('surgery'));
+    }
+
+    public function destroy(int $surgeryId)
+    {
+        $surgeryExists = DB::table('surgeries')->where('surgery_id', $surgeryId)->exists();
+        abort_unless($surgeryExists, 404);
+
+        DB::transaction(function () use ($surgeryId) {
+            $anaesthesiaId = DB::table('anaesthesia')
+                ->where('surgery_id', $surgeryId)
+                ->value('anaesthesia_id');
+
+            if ($anaesthesiaId) {
+                DB::table('anaesthesia_induction_agents')->where('anaesthesia_id', $anaesthesiaId)->delete();
+                DB::table('anaesthesia_maintenance_agents')->where('anaesthesia_id', $anaesthesiaId)->delete();
+                DB::table('anaesthesia_regional_types')->where('anaesthesia_id', $anaesthesiaId)->delete();
+                DB::table('anaesthesia_relaxants')->where('anaesthesia_id', $anaesthesiaId)->delete();
+                DB::table('anaesthesia')->where('anaesthesia_id', $anaesthesiaId)->delete();
+            }
+
+            DB::table('surgery_staff')->where('surgery_id', $surgeryId)->delete();
+            DB::table('surgery_adverse_events')->where('surgery_id', $surgeryId)->delete();
+            DB::table('surgery_analgesics')->where('surgery_id', $surgeryId)->delete();
+            DB::table('surgery_monitoring')->where('surgery_id', $surgeryId)->delete();
+            DB::table('surgeries')->where('surgery_id', $surgeryId)->delete();
+        });
+
+        return redirect()->back()->with('success', 'Record deleted successfully.');
     }
 
     private function hydrateSurgeryDetails(object $row): void
