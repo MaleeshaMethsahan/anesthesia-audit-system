@@ -16,14 +16,11 @@ use App\Models\MaintenanceAgent;
 use App\Models\MonitoringType;
 use App\Models\RegionalType;
 use App\Models\Relaxant;
+use App\Models\IntubationMethod; // Added model import
 use Exception;
 
 class AuditFormController extends Controller
 {
-    /**
-     * Show the form for creating a new anesthesia audit record.
-     * Preloads all required dropdowns, checkboxes, and system data.
-     */
     public function create()
     {
         $medicalSystems = MedicalSystem::with('conditions')->get();
@@ -31,10 +28,11 @@ class AuditFormController extends Controller
         $adverseEvents = AdverseEvent::all();
         $analgesics = Analgesic::all();
         $inductionAgents = InductionAgent::all();
-        $maintenanceAgents = MaintenanceAgent::all();
+        $maintenanceAgents = MaintenanceAgent::whereIn('name', ['Isoflurane', 'Sevoflurane'])->get();
         $monitoringTypes = MonitoringType::all();
         $regionalTypes = RegionalType::all();
         $relaxants = Relaxant::all();
+        $intubationMethods = IntubationMethod::all(); // Fetch intubation methods
 
         return view('audit-form', compact(
             'medicalSystems',
@@ -45,17 +43,13 @@ class AuditFormController extends Controller
             'maintenanceAgents',
             'monitoringTypes',
             'regionalTypes',
-            'relaxants'
+            'relaxants',
+            'intubationMethods' // Pass to view
         ));
     }
 
-    /**
-     * Store a newly created anesthesia audit record in the database.
-     * Handles complex relationships, checkboxes, and transaction failures.
-     */
     public function store(Request $request)
     {
-        // 1. Validate preliminary required constraints mapping the HTML form elements
         $request->validate([
             'patient.name' => 'required',
             'patient.phn' => 'required',
@@ -72,12 +66,10 @@ class AuditFormController extends Controller
             $patientData = $request->input('patient');
             $phn = $patientData['phn'] ?? null;
             
-            // Check if patient exists by PHN
             $patient = Patient::where('phn', $phn)->first();
             if (!$patient) {
                 $patient = Patient::create($patientData);
                 
-                // Sync Patient Conditions
                 if ($request->has('patient_conditions')) {
                     $conditions = [];
                     foreach ((array)$request->input('patient_conditions') as $condition_id) {
@@ -92,7 +84,6 @@ class AuditFormController extends Controller
             $surgeryData['patient_id'] = $patient->patient_id;
             $surgery = Surgery::create($surgeryData);
 
-            // Sync Surgery Staff
             $surgeryStaff = [];
             if ($request->filled('surgeon_id')) {
                 $surgeryStaff[$request->input('surgeon_id')] = ['role_in_case' => 'Consultant Surgeon'];
@@ -120,11 +111,9 @@ class AuditFormController extends Controller
             $anaesthesiaData = $request->input('anaesthesia');
             $anaesthesiaData['surgery_id'] = $surgery->surgery_id;
             
-            // Handle checkboxes correctly
             $anaesthesiaData['difficult_intubation'] = clone_has($request, 'anaesthesia.difficult_intubation') ? 1 : 0;
             $anaesthesiaData['relaxant_used'] = clone_has($request, 'anaesthesia.relaxant_used') ? 1 : 0;
             
-            // Helper function because has() does not work correctly for nested array checkboxes sometimes if we don't bind it right
             if (isset($anaesthesiaData['difficult_intubation']) && $anaesthesiaData['difficult_intubation'] === 'on') {
                 $anaesthesiaData['difficult_intubation'] = 1;
             } else {
@@ -151,6 +140,10 @@ class AuditFormController extends Controller
             }
             if ($request->has('anaesthesia_relaxants')) {
                 $anaesthesia->relaxants()->attach($request->input('anaesthesia_relaxants'));
+            }
+            // Sync Intubation Methods
+            if ($request->has('anaesthesia_intubation_methods')) {
+                $anaesthesia->intubationMethods()->attach($request->input('anaesthesia_intubation_methods'));
             }
 
             DB::commit();

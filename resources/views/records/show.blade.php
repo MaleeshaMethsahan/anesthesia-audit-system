@@ -64,6 +64,88 @@
                 </div>
             </div>
 
+            @if(isset($surgery->anaesthesia))
+            <div class="bg-white shadow-sm sm:rounded-lg border border-gray-200 p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Anaesthesia Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    
+                    <div>
+                        <span class="text-gray-500">Mode:</span>
+                        <span class="font-semibold text-gray-800">{{ $surgery->anaesthesia->mode == 'GA' ? 'General (GA)' : 'Regional' }}</span>
+                    </div>
+
+                    @if($surgery->anaesthesia->mode == 'GA')
+                        <div>
+                            <span class="font-bold text-gray-900 dark:text-white block mb-1">Induction ({{ $surgery->anaesthesia->induction_type }}):</span>
+                            {{ $surgery->anaesthesia->inductionAgents->pluck('name')->implode(', ') ?: 'N/A' }}
+                            @if($surgery->anaesthesia->induction_other_details)
+                                <span class="text-sm italic text-gray-500 block">- Specifically: {{ $surgery->anaesthesia->induction_other_details }}</span>
+                            @endif
+                        </div>
+                        
+                        <div>
+                            <span class="text-gray-500">Maintenance:</span>
+                            <span class="font-semibold text-gray-800">
+                                {{ $surgery->anaesthesia->maintenance_route ?? 'N/A' }}
+                                @if($surgery->anaesthesia->maintenanceAgents && $surgery->anaesthesia->maintenanceAgents->count() > 0)
+                                    ({{ $surgery->anaesthesia->maintenanceAgents->pluck('name')->implode(', ') }})
+                                @endif
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="text-gray-500">Relaxant Used:</span>
+                            <span class="font-semibold text-gray-800">
+                                @if($surgery->anaesthesia->relaxant_used)
+                                    Yes 
+                                    @if($surgery->anaesthesia->relaxants && $surgery->anaesthesia->relaxants->count() > 0)
+                                        ({{ $surgery->anaesthesia->relaxants->pluck('name')->implode(', ') }})
+                                    @endif
+                                @else
+                                    No
+                                @endif
+                            </span>
+                        </div>
+
+                        <div>
+                            <span class="text-gray-500">Difficult Intubation:</span>
+                            <span class="font-semibold {{ $surgery->anaesthesia->difficult_intubation ? 'text-amber-600' : 'text-gray-800' }}">
+                                @if($surgery->anaesthesia->difficult_intubation)
+                                    Yes
+                                    @if($surgery->anaesthesia->intubationMethods && $surgery->anaesthesia->intubationMethods->count() > 0)
+                                        ({{ $surgery->anaesthesia->intubationMethods->pluck('method_name')->implode(', ') }})
+                                    @endif
+                                @else
+                                    No
+                                @endif
+                            </span>
+                        </div>
+                    @else
+                        <div>
+                            <span class="font-bold text-gray-900 dark:text-white block mb-1">Regional Types:</span>
+                            <span class="text-gray-800 dark:text-gray-200">
+                                @if($surgery->anaesthesia->regionalTypes && $surgery->anaesthesia->regionalTypes->count() > 0)
+                                    {{ $surgery->anaesthesia->regionalTypes->pluck('name')->implode(', ') }}
+                                @else
+                                    N/A
+                                @endif
+                            </span>
+                            @if($surgery->anaesthesia->regional_other_details)
+                                <span class="text-sm italic text-gray-500 block mt-1">- Specifically: {{ $surgery->anaesthesia->regional_other_details }}</span>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+
+                @if($surgery->anaesthesia->notes)
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <span class="text-gray-500 text-sm block mb-1">Additional Notes:</span>
+                    <p class="text-sm text-gray-800 whitespace-pre-wrap">{{ $surgery->anaesthesia->notes }}</p>
+                </div>
+                @endif
+            </div>
+            @endif
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white shadow-sm sm:rounded-lg border border-gray-200 p-6">
                     <h4 class="text-base font-bold text-gray-800 mb-3">Medical Conditions</h4>
@@ -95,6 +177,10 @@
                         @empty
                             <li class="list-none text-gray-400">No analgesia recorded.</li>
                         @endforelse
+
+                        @if($surgery->analgesia_other_details)
+                            <li class="font-semibold text-teal-600 mt-2">Other: {{ $surgery->analgesia_other_details }}</li>
+                        @endif
                     </ul>
                 </div>
 
@@ -106,6 +192,10 @@
                         @empty
                             <li class="list-none text-green-600">None reported.</li>
                         @endforelse
+
+                        @if($surgery->adverse_event_other_details)
+                            <li class="font-semibold text-red-600 mt-2">Other: {{ $surgery->adverse_event_other_details }}</li>
+                        @endif
                     </ul>
                 </div>
             </div>
@@ -123,6 +213,7 @@
                     @endforelse
                 </ul>
             </div>
+            
         </div>
     </div>
 </x-app-layout>
