@@ -17,14 +17,16 @@ class Anaesthesia extends Model
     public $timestamps = false;
     
     protected $fillable = [
-        'surgery_id',
-        'mode',
-        'induction_type',
-        'maintenance_route',
-        'difficult_intubation',
-        'relaxant_used',
-        'notes',
-    ];
+            'surgery_id',
+            'mode',
+            'induction_type',
+            'induction_other_details', // <--- Add this line
+            'maintenance_route',
+            'relaxant_used',
+            'regional_other_details',
+            'difficult_intubation',
+            'notes',
+        ];
 
     public function surgery(): BelongsTo
     {
@@ -49,5 +51,10 @@ class Anaesthesia extends Model
     public function relaxants(): BelongsToMany
     {
         return $this->belongsToMany(Relaxant::class, 'anaesthesia_relaxants', 'anaesthesia_id', 'relaxant_id');
+    }
+
+    public function intubationMethods()
+    {
+        return $this->belongsToMany(IntubationMethod::class, 'anaesthesia_intubation_methods', 'anaesthesia_id', 'method_id');
     }
 }

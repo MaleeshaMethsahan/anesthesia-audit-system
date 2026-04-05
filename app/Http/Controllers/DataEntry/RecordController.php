@@ -16,12 +16,13 @@ class RecordController extends Controller
             ->select(
                 's.surgery_id', 's.operation_name', 's.surgical_specialty', 
                 's.surgery_type', 's.date_of_surgery', 's.asa_grade', 's.post_op_admission',
+                's.adverse_event_other_details', 's.analgesia_other_details', // <-- ADDED HERE
                 'p.patient_id', 'p.phn', 'p.name', 'p.age', 'p.sex', 'p.bht'
             )
             ->orderBy('s.surgery_id', 'desc')
             ->get();
 
-        // 2. Fetch sub-data for each surgery (Replicating your getList function)
+        // 2. Fetch sub-data for each surgery
         foreach ($surgeries as $row) {
             $this->hydrateSurgeryDetails($row);
         }
@@ -36,6 +37,7 @@ class RecordController extends Controller
             ->select(
                 's.surgery_id', 's.operation_name', 's.surgical_specialty',
                 's.surgery_type', 's.date_of_surgery', 's.asa_grade', 's.post_op_admission',
+                's.adverse_event_other_details', 's.analgesia_other_details', // <-- ADDED HERE
                 'p.patient_id', 'p.name', 'p.age', 'p.sex', 'p.bht'
             )
             ->where('s.surgery_id', $surgeryId)
@@ -63,6 +65,10 @@ class RecordController extends Controller
                 DB::table('anaesthesia_maintenance_agents')->where('anaesthesia_id', $anaesthesiaId)->delete();
                 DB::table('anaesthesia_regional_types')->where('anaesthesia_id', $anaesthesiaId)->delete();
                 DB::table('anaesthesia_relaxants')->where('anaesthesia_id', $anaesthesiaId)->delete();
+                
+                // Delete intubation methods
+                DB::table('anaesthesia_intubation_methods')->where('anaesthesia_id', $anaesthesiaId)->delete();
+                
                 DB::table('anaesthesia')->where('anaesthesia_id', $anaesthesiaId)->delete();
             }
 
@@ -106,5 +112,47 @@ class RecordController extends Controller
             ->where('ss.surgery_id', $id)
             ->select('ss.role_in_case', 'st.name')
             ->get();
+
+        // --- NEW: FETCH ANAESTHESIA DATA ---
+        $anaesthesia = DB::table('anaesthesia')->where('surgery_id', $id)->first();
+
+        if ($anaesthesia) {
+            $aId = $anaesthesia->anaesthesia_id;
+
+            $anaesthesia->inductionAgents = DB::table('anaesthesia_induction_agents as aia')
+                ->join('induction_agents as ia', 'aia.induction_agent_id', '=', 'ia.induction_agent_id')
+                ->where('aia.anaesthesia_id', $aId)
+                ->select('ia.name')
+                ->get();
+
+            $anaesthesia->maintenanceAgents = DB::table('anaesthesia_maintenance_agents as ama')
+                ->join('maintenance_agents as ma', 'ama.maintenance_agent_id', '=', 'ma.maintenance_agent_id')
+                ->where('ama.anaesthesia_id', $aId)
+                ->select('ma.name')
+                ->get();
+
+            $anaesthesia->relaxants = DB::table('anaesthesia_relaxants as ar')
+                ->join('relaxants as r', 'ar.relaxant_id', '=', 'r.relaxant_id')
+                ->where('ar.anaesthesia_id', $aId)
+                ->select('r.name')
+                ->get();
+
+            $anaesthesia->regionalTypes = DB::table('anaesthesia_regional_types as art')
+                ->join('regional_types as rt', 'art.regional_type_id', '=', 'rt.regional_type_id')
+                ->where('art.anaesthesia_id', $aId)
+                ->select('rt.name')
+                ->get();
+                
+            // Fetch our newly added Intubation Methods
+            $anaesthesia->intubationMethods = DB::table('anaesthesia_intubation_methods as aim')
+                ->join('intubation_methods as im', 'aim.method_id', '=', 'im.method_id')
+                ->where('aim.anaesthesia_id', $aId)
+                ->select('im.method_name')
+                ->get();
+
+            $row->anaesthesia = $anaesthesia;
+        } else {
+            $row->anaesthesia = null;
+        }
     }
 }

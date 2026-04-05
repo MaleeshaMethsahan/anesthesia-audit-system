@@ -25,6 +25,8 @@ class Surgery extends Model
         'date_of_surgery',
         'asa_grade',
         'post_op_admission',
+        'adverse_event_other_details',
+        'analgesia_other_details',
     ];
 
     public function patient(): BelongsTo
