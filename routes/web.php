@@ -55,6 +55,7 @@ Route::middleware('auth')->group(function () {
 
             // Access and submit the Anesthesia Audit form
             Route::get('/audit-form', [AuditFormController::class, 'create'])->name('audit-form.create');
+                Route::get('/audit-form/phn-suggestions', [AuditFormController::class, 'phnSuggestions'])->name('audit-form.phn-suggestions');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
     });
 
@@ -73,6 +74,7 @@ Route::middleware('auth')->group(function () {
 
             // Access and submit the Anesthesia Audit form
             Route::get('/audit-form', [AuditFormController::class, 'create'])->name('audit-form.create');
+                Route::get('/audit-form/phn-suggestions', [AuditFormController::class, 'phnSuggestions'])->name('audit-form.phn-suggestions');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
     });
 

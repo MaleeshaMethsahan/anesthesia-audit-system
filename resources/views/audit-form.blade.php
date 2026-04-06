@@ -51,27 +51,30 @@
                         <div class="lg:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Patient Name
                                 <span class="text-red-500">*</span></label>
-                            <input type="text" name="patient[name]" required
+                            <input type="text" name="patient[name]" id="patient-name-input" required
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 value="{{ old('patient.name') }}" placeholder="Full Name">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PHN <span
                                     class="text-red-500">*</span></label>
-                            <input type="text" name="patient[phn]" required
+                            <input type="text" name="patient[phn]" id="patient-phn-input"
+                                data-suggestions-url="{{ route($routePrefix . 'audit-form.phn-suggestions') }}"
+                                list="phn-suggestions-list" autocomplete="off" required
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 value="{{ old('patient.phn') }}" placeholder="e.g. 12345">
+                            <datalist id="phn-suggestions-list"></datalist>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Age</label>
-                            <input type="number" name="patient[age]"
+                            <input type="number" name="patient[age]" id="patient-age-input"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 value="{{ old('patient.age') }}">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sex <span
                                     class="text-red-500">*</span></label>
-                            <select name="patient[sex]" required
+                            <select name="patient[sex]" id="patient-sex-select" required
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                 <option value="">Select</option>
                                 <option value="M" {{ old('patient.sex')=='M' ? 'selected' : '' }}>Male</option>
@@ -329,7 +332,7 @@
                                                 <span class="text-sm">IV</span>
                                             </label>
                                         </div>
-                                        <div class="flex flex-wrap gap-3 mt-2 pl-2 border-l-2 border-amber-200">
+                                        <div id="induction-agents-container" class="flex flex-wrap gap-3 mt-2 pl-2 border-l-2 border-amber-200 {{ old('anaesthesia.induction_type') == 'IV' ? '' : 'hidden' }}">
                                             @foreach($inductionAgents as $agent)
                                             <label class="flex items-center space-x-2">
                                                 <input type="checkbox" name="anaesthesia_induction_agents[]"
@@ -342,7 +345,7 @@
                                             @endforeach
                                         </div>
                                         
-                                        <div id="induction-other-container" class="mt-3 pl-2 border-l-2 border-amber-200 {{ old('anaesthesia.induction_other_details') ? '' : 'hidden' }}">
+                                        <div id="induction-other-container" class="mt-3 pl-2 border-l-2 border-amber-200 {{ old('anaesthesia.induction_type') == 'IV' && old('anaesthesia.induction_other_details') ? '' : 'hidden' }}">
                                             <input type="text" name="anaesthesia[induction_other_details]" 
                                                 value="{{ old('anaesthesia.induction_other_details') }}" 
                                                 class="w-full text-sm rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" 
@@ -531,9 +534,118 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Patient Type Toggle Logic
+            const ageInput = document.getElementById('patient-age-input');
+            const phnInput = document.getElementById('patient-phn-input');
+            const phnSuggestionsList = document.getElementById('phn-suggestions-list');
+            const patientNameInput = document.getElementById('patient-name-input');
+            const patientSexSelect = document.getElementById('patient-sex-select');
             const adultLabel = document.getElementById('label-adult');
             const paedLabel = document.getElementById('label-paediatric');
             const systemCards = document.querySelectorAll('.system-card');
+            const medicalDiseaseRadios = document.querySelectorAll('input[name="medical_disease_type"]');
+            let phnSuggestionTimer = null;
+            let phnSuggestionController = null;
+            let phnSuggestionsCache = [];
+
+            function selectMedicalDiseaseType(type) {
+                const targetRadio = document.querySelector('input[name="medical_disease_type"][value="' + type + '"]');
+
+                if (targetRadio && !targetRadio.checked) {
+                    targetRadio.click();
+                } else if (targetRadio) {
+                    updateDisplay(type);
+                }
+            }
+
+            function syncMedicalDiseaseByAge() {
+                const age = parseInt(ageInput ? ageInput.value : '', 10);
+
+                if (Number.isNaN(age)) {
+                    return;
+                }
+
+                if (age > 18) {
+                    selectMedicalDiseaseType('Adult');
+                } else {
+                    selectMedicalDiseaseType('Paediatric');
+                }
+            }
+
+            async function loadPhnSuggestions() {
+                if (!phnInput || !phnSuggestionsList) {
+                    return;
+                }
+
+                const query = phnInput.value.trim();
+
+                if (query.length < 2) {
+                    phnSuggestionsList.innerHTML = '';
+                    return;
+                }
+
+                const suggestionsUrl = phnInput.dataset.suggestionsUrl;
+
+                if (!suggestionsUrl) {
+                    return;
+                }
+
+                if (phnSuggestionController) {
+                    phnSuggestionController.abort();
+                }
+
+                phnSuggestionController = new AbortController();
+
+                try {
+                    const response = await fetch(`${suggestionsUrl}?query=${encodeURIComponent(query)}`, {
+                        headers: {
+                            'Accept': 'application/json',
+                        },
+                        signal: phnSuggestionController.signal,
+                    });
+
+                    if (!response.ok) {
+                        return;
+                    }
+
+                    const suggestions = await response.json();
+                    phnSuggestionsCache = Array.isArray(suggestions) ? suggestions : [];
+                    phnSuggestionsList.innerHTML = '';
+
+                    phnSuggestionsCache.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.phn;
+                        option.label = item.name ? `${item.phn} - ${item.name}` : item.phn;
+                        phnSuggestionsList.appendChild(option);
+                    });
+
+                    applyPatientDetailsFromPhn();
+                } catch (error) {
+                    if (error.name !== 'AbortError') {
+                        phnSuggestionsList.innerHTML = '';
+                        phnSuggestionsCache = [];
+                    }
+                }
+            }
+
+            function applyPatientDetailsFromPhn() {
+                if (!phnInput) {
+                    return;
+                }
+
+                const matchedPatient = phnSuggestionsCache.find(item => String(item.phn) === phnInput.value.trim());
+
+                if (!matchedPatient) {
+                    return;
+                }
+
+                if (patientNameInput && matchedPatient.name) {
+                    patientNameInput.value = matchedPatient.name;
+                }
+
+                if (patientSexSelect && matchedPatient.sex) {
+                    patientSexSelect.value = matchedPatient.sex;
+                }
+            }
             
             function updateDisplay(type) {
                 // Update toggle styling
@@ -572,13 +684,33 @@
             }
 
             // Radio change event
-            document.querySelectorAll('input[name="medical_disease_type"]').forEach(radio => {
+            medicalDiseaseRadios.forEach(radio => {
                 radio.addEventListener('change', (e) => updateDisplay(e.target.value));
             });
+
+            if (ageInput) {
+                ageInput.addEventListener('input', syncMedicalDiseaseByAge);
+                ageInput.addEventListener('change', syncMedicalDiseaseByAge);
+            }
+
+            if (phnInput) {
+                phnInput.addEventListener('input', function() {
+                    window.clearTimeout(phnSuggestionTimer);
+                    phnSuggestionTimer = window.setTimeout(loadPhnSuggestions, 250);
+                    applyPatientDetailsFromPhn();
+                });
+
+                phnInput.addEventListener('focus', loadPhnSuggestions);
+                phnInput.addEventListener('change', applyPatientDetailsFromPhn);
+            }
 
             // Init
             const checkedRadio = document.querySelector('input[name="medical_disease_type"]:checked');
             if(checkedRadio) updateDisplay(checkedRadio.value);
+
+            if (ageInput && ageInput.value !== '') {
+                syncMedicalDiseaseByAge();
+            }
 
             // Anaesthesia Mode visibility toggling
             const modeSelect = document.getElementById('anaesthesia-mode-select');
@@ -655,9 +787,41 @@
                 });
             }
 
-            // "Others" Induction Agent Text Box Toggle Logic
-            const inductionCheckboxes = document.querySelectorAll('.induction-agent-cb');
+            // Induction Type Toggle Logic
+            const inductionTypeRadios = document.querySelectorAll('input[name="anaesthesia[induction_type]"]');
+            const inductionAgentsContainer = document.getElementById('induction-agents-container');
             const inductionOtherContainer = document.getElementById('induction-other-container');
+            const inductionCheckboxes = document.querySelectorAll('.induction-agent-cb');
+
+            function resetInductionSelections() {
+                inductionCheckboxes.forEach(cb => {
+                    cb.checked = false;
+                });
+
+                if (inductionOtherContainer) {
+                    const input = inductionOtherContainer.querySelector('input');
+                    if (input) input.value = '';
+                }
+            }
+
+            function checkInductionVisibility() {
+                const selectedRadio = document.querySelector('input[name="anaesthesia[induction_type]"]:checked');
+                const isIVSelected = selectedRadio && selectedRadio.value === 'IV';
+
+                if (inductionAgentsContainer) {
+                    inductionAgentsContainer.classList.toggle('hidden', !isIVSelected);
+                }
+
+                if (!isIVSelected) {
+                    if (inductionOtherContainer) {
+                        inductionOtherContainer.classList.add('hidden');
+                    }
+                    resetInductionSelections();
+                    return;
+                }
+
+                checkInductionOthers();
+            }
 
             function checkInductionOthers() {
                 let isOthersChecked = false;
@@ -669,21 +833,32 @@
                 });
                 
                 if (isOthersChecked) {
-                    inductionOtherContainer.classList.remove('hidden');
+                    if (inductionOtherContainer) {
+                        inductionOtherContainer.classList.remove('hidden');
+                    }
                 } else {
-                    inductionOtherContainer.classList.add('hidden');
+                    if (inductionOtherContainer) {
+                        inductionOtherContainer.classList.add('hidden');
+                    }
                     // Clear the text box when hidden so we don't save accidental data
-                    const input = inductionOtherContainer.querySelector('input');
+                    const input = inductionOtherContainer ? inductionOtherContainer.querySelector('input') : null;
                     if(input) input.value = '';
                 }
+            }
+
+            if (inductionTypeRadios.length > 0) {
+                inductionTypeRadios.forEach(radio => {
+                    radio.addEventListener('change', checkInductionVisibility);
+                });
             }
 
             if (inductionCheckboxes.length > 0 && inductionOtherContainer) {
                 inductionCheckboxes.forEach(cb => {
                     cb.addEventListener('change', checkInductionOthers);
                 });
-                checkInductionOthers(); // Run on page load in case it's already checked (old input)
             }
+
+            checkInductionVisibility();
 
             // "Others" Regional Type Text Box Toggle Logic
             const regionalCheckboxes = document.querySelectorAll('.regional-type-cb');

@@ -48,6 +48,31 @@ class AuditFormController extends Controller
         ));
     }
 
+    public function phnSuggestions(Request $request)
+    {
+        $query = trim((string) $request->query('query', ''));
+
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        $patients = Patient::query()
+            ->where('phn', 'like', '%' . $query . '%')
+            ->orderBy('phn')
+            ->limit(10)
+            ->get(['phn', 'name', 'sex']);
+
+        return response()->json(
+            $patients->map(function (Patient $patient) {
+                return [
+                    'phn' => $patient->phn,
+                    'name' => $patient->name,
+                    'sex' => $patient->sex,
+                ];
+            })
+        );
+    }
+
     public function store(Request $request)
     {
         $request->validate([
