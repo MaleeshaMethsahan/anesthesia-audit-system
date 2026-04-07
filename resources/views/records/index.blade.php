@@ -42,9 +42,26 @@
                         <h5 class="font-bold text-lg text-gray-800">Case Audit Log</h5>
                         <p class="text-xs text-gray-500">Viewing all clinical records from Teaching Hospital Jaffna</p>
                     </div>
-                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">
-                        {{ count($surgeries) }} Records
-                    </span>
+                    <div class="flex items-center gap-3">
+                        <span id="recordCountBadge" class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">
+                            {{ count($surgeries) }} Records
+                        </span>
+                        <div class="relative">
+                            <input
+                                id="recordSearch"
+                                type="text"
+                                placeholder="Search PHN / Name"
+                                aria-label="Search by PHN or patient name"
+                                class="w-80 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-xs py-1.5 pr-8"
+                                style="width: 20rem;"
+                            >
+                            <span class="pointer-events-none text-gray-400" style="position: absolute; right: 0.6rem; top: 50%; transform: translateY(-50%); display: flex; align-items: center;" aria-hidden="true">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Table -->
@@ -63,9 +80,9 @@
                                 <th class="px-4 py-3 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody class="divide-y divide-gray-100" id="recordsTableBody">
                             @forelse($surgeries as $row)
-                                <tr class="hover:bg-gray-50 align-top">
+                                <tr class="hover:bg-gray-50 align-top record-row" data-phn="{{ strtolower($row->phn ?? '') }}" data-name="{{ strtolower($row->name ?? '') }}">
                                     <td class="px-4 py-4 font-bold text-gray-700">{{ $row->phn ?? '-' }}</td>
                                     
                                     <!-- Patient -->
@@ -171,6 +188,10 @@
                     </table>
                 </div>
 
+                <div id="noSearchResults" class="hidden px-6 py-8 text-center text-sm text-gray-500 border-t border-gray-100">
+                    No matching records found for your search.
+                </div>
+
                 <!-- Footer -->
                 <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-400">
                     Data automatically synchronized with Anaesthesia Information System.
@@ -179,4 +200,50 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('recordSearch');
+            const rows = document.querySelectorAll('.record-row');
+            const noResults = document.getElementById('noSearchResults');
+            const recordCountBadge = document.getElementById('recordCountBadge');
+            const totalCount = rows.length;
+
+            if (!searchInput || rows.length === 0) {
+                return;
+            }
+
+            const updateRecordCount = function (visibleCount) {
+                if (!recordCountBadge) {
+                    return;
+                }
+
+                recordCountBadge.textContent = visibleCount + ' Records';
+            };
+
+            updateRecordCount(totalCount);
+
+            searchInput.addEventListener('input', function (event) {
+                const query = event.target.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                rows.forEach(function (row) {
+                    const phn = row.dataset.phn || '';
+                    const name = row.dataset.name || '';
+                    const matches = phn.includes(query) || name.includes(query);
+
+                    row.style.display = matches ? '' : 'none';
+                    if (matches) {
+                        visibleCount += 1;
+                    }
+                });
+
+                if (noResults) {
+                    noResults.classList.toggle('hidden', visibleCount !== 0 || query === '');
+                }
+
+                updateRecordCount(visibleCount);
+            });
+        });
+    </script>
 </x-app-layout>
