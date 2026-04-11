@@ -9,75 +9,116 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('patient_conditions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('patient_id')->constrained('patients', 'patient_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('condition_id')->constrained('medical_conditions', 'condition_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('patient_id');
+            $table->unsignedInteger('condition_id');
             $table->timestamp('recorded_at')->useCurrent();
+            $table->index('patient_id', 'idx_patient_conditions_patient');
             $table->unique(['patient_id', 'condition_id'], 'uq_patient_condition');
+            $table->foreign('patient_id', 'fk_patient_conditions_patient')->references('patient_id')->on('patients')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('condition_id', 'fk_patient_conditions_condition')->references('condition_id')->on('medical_conditions')->cascadeOnUpdate();
         });
 
         Schema::create('surgery_adverse_events', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('surgery_id')->constrained('surgeries', 'surgery_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('event_id')->constrained('adverse_events', 'event_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('surgery_id');
+            $table->unsignedInteger('event_id');
             $table->unique(['surgery_id', 'event_id'], 'uq_sae');
+            $table->foreign('surgery_id', 'fk_sae_surgery')->references('surgery_id')->on('surgeries')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('event_id', 'fk_sae_event')->references('event_id')->on('adverse_events')->cascadeOnUpdate();
         });
 
         Schema::create('surgery_analgesics', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('surgery_id')->constrained('surgeries', 'surgery_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('analgesic_id')->constrained('analgesics', 'analgesic_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('surgery_id');
+            $table->unsignedInteger('analgesic_id');
             $table->unique(['surgery_id', 'analgesic_id'], 'uq_sa');
+            $table->foreign('surgery_id', 'fk_sa_surgery')->references('surgery_id')->on('surgeries')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('analgesic_id', 'fk_sa_analgesic')->references('analgesic_id')->on('analgesics')->cascadeOnUpdate();
         });
 
         Schema::create('surgery_monitoring', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('surgery_id')->constrained('surgeries', 'surgery_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('monitoring_id')->constrained('monitoring_types', 'monitoring_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('surgery_id');
+            $table->unsignedInteger('monitoring_id');
             $table->unique(['surgery_id', 'monitoring_id'], 'uq_surgery_monitoring');
+            $table->foreign('surgery_id', 'fk_sm_surgery')->references('surgery_id')->on('surgeries')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('monitoring_id', 'fk_sm_monitoring')->references('monitoring_id')->on('monitoring_types')->cascadeOnUpdate();
         });
 
         Schema::create('surgery_staff', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('surgery_id')->constrained('surgeries', 'surgery_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('staff_id')->constrained('staff', 'staff_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('surgery_id');
+            $table->unsignedInteger('staff_id');
             $table->enum('role_in_case', ['Consultant Surgeon', 'Consultant Anaesthetist', 'MOA']);
             $table->unique(['surgery_id', 'staff_id', 'role_in_case'], 'uq_surgery_staff');
+            $table->foreign('surgery_id', 'fk_ss_surgery')->references('surgery_id')->on('surgeries')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('staff_id', 'fk_ss_staff')->references('staff_id')->on('staff')->cascadeOnUpdate();
         });
 
         Schema::create('anaesthesia_induction_agents', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('anaesthesia_id')->constrained('anaesthesia', 'anaesthesia_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('induction_agent_id')->constrained('induction_agents', 'induction_agent_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('anaesthesia_id');
+            $table->unsignedInteger('induction_agent_id');
             $table->unique(['anaesthesia_id', 'induction_agent_id'], 'uq_aia');
+            $table->foreign('anaesthesia_id', 'fk_aia_anaesthesia')->references('anaesthesia_id')->on('anaesthesia')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('induction_agent_id', 'fk_aia_agent')->references('induction_agent_id')->on('induction_agents')->cascadeOnUpdate();
         });
 
         Schema::create('anaesthesia_maintenance_agents', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('anaesthesia_id')->constrained('anaesthesia', 'anaesthesia_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('maintenance_agent_id')->constrained('maintenance_agents', 'maintenance_agent_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('anaesthesia_id');
+            $table->unsignedInteger('maintenance_agent_id');
             $table->unique(['anaesthesia_id', 'maintenance_agent_id'], 'uq_ama');
+            $table->foreign('anaesthesia_id', 'fk_ama_anaesthesia')->references('anaesthesia_id')->on('anaesthesia')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('maintenance_agent_id', 'fk_ama_agent')->references('maintenance_agent_id')->on('maintenance_agents')->cascadeOnUpdate();
         });
 
         Schema::create('anaesthesia_regional_types', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('anaesthesia_id')->constrained('anaesthesia', 'anaesthesia_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('regional_type_id')->constrained('regional_types', 'regional_type_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('anaesthesia_id');
+            $table->unsignedInteger('regional_type_id');
             $table->unique(['anaesthesia_id', 'regional_type_id'], 'uq_art');
+            $table->foreign('anaesthesia_id', 'fk_art_anaesthesia')->references('anaesthesia_id')->on('anaesthesia')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('regional_type_id', 'fk_art_regional')->references('regional_type_id')->on('regional_types')->cascadeOnUpdate();
         });
 
         Schema::create('anaesthesia_relaxants', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('anaesthesia_id')->constrained('anaesthesia', 'anaesthesia_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('relaxant_id')->constrained('relaxants', 'relaxant_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('anaesthesia_id');
+            $table->unsignedInteger('relaxant_id');
             $table->unique(['anaesthesia_id', 'relaxant_id'], 'uq_ar');
+            $table->foreign('anaesthesia_id', 'fk_ar_anaesthesia')->references('anaesthesia_id')->on('anaesthesia')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('relaxant_id', 'fk_ar_relaxant')->references('relaxant_id')->on('relaxants')->cascadeOnUpdate();
         });
 
         Schema::create('anaesthesia_intubation_methods', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('anaesthesia_id')->constrained('anaesthesia', 'anaesthesia_id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('method_id')->constrained('intubation_methods', 'method_id')->cascadeOnUpdate();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('id');
+            $table->unsignedInteger('anaesthesia_id');
+            $table->unsignedBigInteger('method_id');
             $table->timestamps();
+            $table->foreign('anaesthesia_id', 'fk_aim_anaesthesia')->references('anaesthesia_id')->on('anaesthesia')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('method_id', 'fk_aim_method')->references('method_id')->on('intubation_methods')->cascadeOnUpdate();
         });
     }
 

@@ -9,48 +9,66 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('adverse_events', function (Blueprint $table) {
-            $table->id('event_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('event_id');
             $table->string('event_name', 120)->unique();
         });
 
         Schema::create('analgesics', function (Blueprint $table) {
-            $table->id('analgesic_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('analgesic_id');
             $table->string('name', 80)->unique();
         });
 
         Schema::create('induction_agents', function (Blueprint $table) {
-            $table->id('induction_agent_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('induction_agent_id');
             $table->string('name', 80)->unique();
         });
 
         Schema::create('maintenance_agents', function (Blueprint $table) {
-            $table->id('maintenance_agent_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('maintenance_agent_id');
             $table->string('name', 80)->unique();
         });
 
         Schema::create('monitoring_types', function (Blueprint $table) {
-            $table->id('monitoring_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('monitoring_id');
             $table->string('monitoring_name', 80)->unique();
         });
 
         Schema::create('regional_types', function (Blueprint $table) {
-            $table->id('regional_type_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('regional_type_id');
             $table->string('name', 80)->unique();
         });
 
         Schema::create('relaxants', function (Blueprint $table) {
-            $table->id('relaxant_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('relaxant_id');
             $table->string('name', 80)->unique();
         });
 
         Schema::create('staff', function (Blueprint $table) {
-            $table->id('staff_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('staff_id');
             $table->string('name', 150)->unique();
             $table->timestamp('created_at')->useCurrent();
         });
 
         Schema::create('audit_form_meta', function (Blueprint $table) {
-            $table->id('meta_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('meta_id');
             $table->string('form_name', 150);
             $table->string('institution', 150)->nullable();
             $table->string('version_note', 150)->nullable();
@@ -64,7 +82,9 @@ return new class extends Migration
         });
 
         Schema::create('medical_systems', function (Blueprint $table) {
-            $table->id('system_id');
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
+            $table->increments('system_id');
             $table->string('system_code', 20)->unique();
             $table->string('system_name', 120);
         });
