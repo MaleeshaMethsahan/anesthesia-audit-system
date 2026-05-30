@@ -10,15 +10,15 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('login_logs', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
-        $table->string('ip_address')->nullable();
-        $table->string('user_agent')->nullable(); // Browser/Device info
-        $table->timestamp('login_at');
-    });
-}
+    {
+        Schema::create('login_logs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('ip_address')->nullable();
+            $table->string('user_agent')->nullable();
+            $table->timestamp('login_at')->useCurrent()->useCurrentOnUpdate();
+        });
+    }
 
     /**
      * Reverse the migrations.
