@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Staff;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View; 
@@ -37,12 +39,23 @@ class RegisteredUserController extends Controller
             'role' => ['required', 'in:system_admin,doctor,data_entry'], 
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role, // Save the role
-        ]);
+        $user = DB::transaction(function () use ($request) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => $request->role, // Save the role
+            ]);
+
+            // If the new user is a doctor, ensure a matching staff record exists for the audit form
+            if ($user->role === 'doctor') {
+                Staff::firstOrCreate([
+                    'name' => $user->name,
+                ]);
+            }
+
+            return $user;
+        });
 
         event(new Registered($user));
 
