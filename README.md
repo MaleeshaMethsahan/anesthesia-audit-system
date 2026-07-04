@@ -122,7 +122,7 @@ Then update `DB_DATABASE` in `.env` to match that name.
 This creates the tables used by the app.
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
 If you want to start from a clean database, use:
