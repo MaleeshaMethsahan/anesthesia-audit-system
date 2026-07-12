@@ -24,7 +24,45 @@
                         + Register New User
                     </a>
 
-                    
+                    <div class="mt-8 bg-white shadow rounded-lg p-6">
+    <h3 class="text-lg font-bold mb-4">
+        Active Users (Last 5 Minutes)
+    </h3>
+
+    @if($activeUsers->count())
+        <table class="min-w-full border border-gray-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 border">Name</th>
+                    <th class="px-4 py-2 border">Role</th>
+                    <th class="px-4 py-2 border">Last Seen</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach($activeUsers as $user)
+                    <tr>
+                        <td class="px-4 py-2 border">
+                            {{ $user->name }}
+                        </td>
+
+                        <td class="px-4 py-2 border">
+                            {{ ucfirst($user->role) }}
+                        </td>
+
+                        <td class="px-4 py-2 border">
+                            {{ $user->last_seen_at?->diffForHumans() }}
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class="text-gray-500">
+            No active users.
+        </p>
+    @endif
+</div>
 
                 </div>
                 <div class="p-6 text-gray-900">

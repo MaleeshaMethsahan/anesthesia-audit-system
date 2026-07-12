@@ -1,15 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin; // Note the namespace!
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Returns resources/views/admin/dashboard.blade.php
-        return view('admin.dashboard');
+        $activeUsers = User::where('last_seen_at', '>=', now()->subMinutes(5))
+            ->orderByDesc('last_seen_at')
+            ->get();
+
+        return view('admin.dashboard', compact('activeUsers'));
     }
 }

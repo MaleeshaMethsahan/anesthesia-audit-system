@@ -19,5 +19,10 @@ class LogSuccessfulLogin
             'user_agent' => $this->request->userAgent(),
             'login_at'   => now(),
         ]);
+
+         // Update last seen time
+        $event->user->forceFill([
+            'last_seen_at' => now(),
+        ])->save();
     }
 }
