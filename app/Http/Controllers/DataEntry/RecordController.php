@@ -38,7 +38,7 @@ class RecordController extends Controller
                 's.surgery_id', 's.operation_name', 's.surgical_specialty',
                 's.surgery_type', 's.date_of_surgery', 's.asa_grade', 's.post_op_admission',
                 's.adverse_event_other_details', 's.analgesia_other_details', // <-- ADDED HERE
-                'p.patient_id', 'p.name', 'p.age', 'p.sex', 'p.bht'
+                'p.patient_id','p.phn', 'p.name', 'p.age', 'p.sex', 'p.bht'
             )
             ->where('s.surgery_id', $surgeryId)
             ->first();
