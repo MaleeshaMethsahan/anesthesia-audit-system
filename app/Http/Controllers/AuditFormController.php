@@ -110,18 +110,34 @@ class AuditFormController extends Controller
             $surgery = Surgery::create($surgeryData);
 
             $surgeryStaff = [];
-            if ($request->filled('surgeon_id')) {
-                $surgeryStaff[$request->input('surgeon_id')] = ['role_in_case' => 'Consultant Surgeon'];
-            }
-            if ($request->filled('anaesthetist_id')) {
-                $surgeryStaff[$request->input('anaesthetist_id')] = ['role_in_case' => 'Consultant Anaesthetist'];
-            }
-            if ($request->filled('moa_id')) {
-                $surgeryStaff[$request->input('moa_id')] = ['role_in_case' => 'MOA'];
-            }
-            if (count($surgeryStaff) > 0) {
-                $surgery->staff()->attach($surgeryStaff);
-            }
+
+if ($request->filled('surgeon_id')) {
+    $surgeryStaff[] = [
+        'surgery_id' => $surgery->surgery_id,
+        'staff_id' => $request->input('surgeon_id'),
+        'role_in_case' => 'Consultant Surgeon',
+    ];
+}
+
+if ($request->filled('anaesthetist_id')) {
+    $surgeryStaff[] = [
+        'surgery_id' => $surgery->surgery_id,
+        'staff_id' => $request->input('anaesthetist_id'),
+        'role_in_case' => 'Consultant Anaesthetist',
+    ];
+}
+
+if ($request->filled('moa_id')) {
+    $surgeryStaff[] = [
+        'surgery_id' => $surgery->surgery_id,
+        'staff_id' => $request->input('moa_id'),
+        'role_in_case' => 'MOA',
+    ];
+}
+
+if (!empty($surgeryStaff)) {
+    DB::table('surgery_staff')->insert($surgeryStaff);
+}
             if ($request->has('surgery_adverse_events')) {
                 $surgery->adverseEvents()->attach($request->input('surgery_adverse_events'));
             }
