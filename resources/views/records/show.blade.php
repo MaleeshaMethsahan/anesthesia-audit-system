@@ -159,224 +159,122 @@
             @if(isset($surgery->anaesthesia))
             <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                 <div class="border-b border-gray-200 bg-gray-50 px-6 py-4">
-    <h3 class="text-lg font-bold text-gray-900">
-        Anaesthesia Details
-    </h3>
-</div>
+                    <h3 class="text-lg font-bold text-gray-900">
+                        Anaesthesia Details
+                    </h3>
+                </div>
 
-            <div class="p-6">
-                <div class="space-y-4 text-sm">
-                    
+                <div class="p-6">
                     <div class="mb-4 flex items-center text-sm">
-    <span class="font-medium text-gray-500">
-        Mode:
-    </span>
+                        <span class="font-medium text-gray-500">Mode:</span>
+                        <span class="ml-2 inline-flex items-center rounded-full
+                            {{ $surgery->anaesthesia->mode == 'GA'
+                                ? 'bg-blue-100 text-blue-800'
+                                : ($surgery->anaesthesia->mode == 'Regional' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800')
+                            }}
+                            px-3 py-1 font-semibold">
+                            {{ $surgery->anaesthesia->mode == 'GA'
+                                ? 'General Anaesthesia'
+                                : ($surgery->anaesthesia->mode == 'Regional' ? 'Regional Anaesthesia' : 'GA + Regional Anaesthesia')
+                            }}
+                        </span>
+                    </div>
 
-    <span class="ml-2 inline-flex items-center rounded-full
-        {{ $surgery->anaesthesia->mode == 'GA'
-            ? 'bg-blue-100 text-blue-800'
-            : 'bg-green-100 text-green-800'
-        }}
-        px-3 py-1 font-semibold">
-
-        {{ $surgery->anaesthesia->mode == 'GA'
-            ? 'General Anaesthesia'
-            : 'Regional Anaesthesia'
-        }}
-    </span>
-</div>
-
-                    @if($surgery->anaesthesia->mode == 'GA')
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    @if(in_array($surgery->anaesthesia->mode, ['GA', 'GA + Regional']))
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 mb-4">
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-
-    <h4 class="mb-3 text-sm font-bold text-gray-900">
-        Induction
-    </h4>
-
-    <div class="space-y-2 text-sm">
-
-        <div class="flex items-start">
-            <span class="flex-shrink-0 text-gray-500" style="width: 55px;">
-    Type:
-</span>
-
-            <span class="font-semibold text-gray-900">
-                {{ $surgery->anaesthesia->induction_type ?? 'Not recorded' }}
-            </span>
-        </div>
-
-        <div class="flex items-start">
-            <span class="flex-shrink-0 text-gray-500" style="width: 55px;">
-    Agents:
-</span>
-
-            <span class="font-semibold text-gray-900">
-                {{ $surgery->anaesthesia->inductionAgents->pluck('name')->implode(', ') ?: 'Not recorded' }}
-            </span>
-        </div>
-
-        @if($surgery->anaesthesia->induction_other_details)
-            <div class="flex items-start">
-                <span class="flex-shrink-0 text-gray-500" style="width: 55px;">
-    Other:
-</span>
-
-                <span class="font-semibold text-gray-900">
-                    {{ $surgery->anaesthesia->induction_other_details }}
-                </span>
-            </div>
-        @endif
-
-    </div>
-</div>
-            
-                        
-                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-
-    <h4 class="mb-3 text-sm font-bold text-gray-900">
-        Maintenance
-    </h4>
-
-    <div class="space-y-2 text-sm">
-
-        <div class="flex items-start">
-            <span class="flex-shrink-0 text-gray-500" style="width: 55px;">
-                Route:
-            </span>
-
-            <span class="font-semibold text-gray-900">
-                {{ $surgery->anaesthesia->maintenance_route ?? 'Not recorded' }}
-            </span>
-        </div>
-
-        <div class="flex items-start">
-            <span class="flex-shrink-0 text-gray-500" style="width: 55px;">
-                Agents:
-            </span>
-
-            <span class="font-semibold text-gray-900">
-                {{ $surgery->anaesthesia->maintenanceAgents->pluck('name')->implode(', ') ?: 'Not recorded' }}
-            </span>
-        </div>
-
-    </div>
-
-</div>
+                            <h4 class="mb-3 text-sm font-bold text-gray-900">Induction</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 text-gray-500" style="width: 55px;">Type:</span>
+                                    <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->induction_type ?? 'Not recorded' }}</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 text-gray-500" style="width: 55px;">Agents:</span>
+                                    <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->inductionAgents->pluck('name')->implode(', ') ?: 'Not recorded' }}</span>
+                                </div>
+                                @if($surgery->anaesthesia->induction_other_details)
+                                    <div class="flex items-start">
+                                        <span class="flex-shrink-0 text-gray-500" style="width: 55px;">Other:</span>
+                                        <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->induction_other_details }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
 
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-
-    <h4 class="mb-3 text-sm font-bold text-gray-900">
-        Relaxants
-    </h4>
-
-    <div class="space-y-2 text-sm">
-
-        <div class="flex items-start">
-            <span class="flex-shrink-0 text-gray-500" style="width: 55px;">
-                Used:
-            </span>
-
-            <span class="font-semibold text-gray-900">
-                {{ $surgery->anaesthesia->relaxant_used ? 'Yes' : 'No' }}
-            </span>
-        </div>
-
-        @if($surgery->anaesthesia->relaxant_used)
-            <div class="flex items-start">
-                <span class="flex-shrink-0 text-gray-500" style="width: 55px;">
-                    Agents:
-                </span>
-
-                <span class="font-semibold text-gray-900">
-                    {{ $surgery->anaesthesia->relaxants->pluck('name')->implode(', ') ?: 'Not recorded' }}
-                </span>
-            </div>
-        @endif
-
-    </div>
-
-</div>
+                            <h4 class="mb-3 text-sm font-bold text-gray-900">Maintenance</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 text-gray-500" style="width: 55px;">Route:</span>
+                                    <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->maintenance_route ?? 'Not recorded' }}</span>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 text-gray-500" style="width: 55px;">Agents:</span>
+                                    <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->maintenanceAgents->pluck('name')->implode(', ') ?: 'Not recorded' }}</span>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                            <h4 class="mb-3 text-sm font-bold text-gray-900">Relaxants</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 text-gray-500" style="width: 55px;">Used:</span>
+                                    <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->relaxant_used ? 'Yes' : 'No' }}</span>
+                                </div>
+                                @if($surgery->anaesthesia->relaxant_used)
+                                    <div class="flex items-start">
+                                        <span class="flex-shrink-0 text-gray-500" style="width: 55px;">Agents:</span>
+                                        <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->relaxants->pluck('name')->implode(', ') ?: 'Not recorded' }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
 
-    <h4 class="mb-3 text-sm font-bold text-gray-900">
-        Difficult Intubation
-    </h4>
-
-    <div class="space-y-2 text-sm">
-
-        <div class="flex items-start">
-            <span class="flex-shrink-0 text-gray-500" style="width: 65px;">
-                Status:
-            </span>
-
-            <span class="font-semibold {{ $surgery->anaesthesia->difficult_intubation ? 'text-amber-700' : 'text-gray-900' }}">
-                {{ $surgery->anaesthesia->difficult_intubation ? 'Yes' : 'No' }}
-            </span>
-        </div>
-
-        @if($surgery->anaesthesia->difficult_intubation)
-            <div class="flex items-start">
-                <span class="flex-shrink-0 text-gray-500" style="width: 65px;">
-                    Methods:
-                </span>
-
-                <span class="font-semibold text-gray-900">
-                    {{ $surgery->anaesthesia->intubationMethods->pluck('method_name')->implode(', ') ?: 'Not recorded' }}
-                </span>
-            </div>
-        @endif
-</div>
-    </div>
-
-</div>
-                    @else
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                            <h4 class="mb-3 text-sm font-bold text-gray-900">Difficult Intubation</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 text-gray-500" style="width: 65px;">Status:</span>
+                                    <span class="font-semibold {{ $surgery->anaesthesia->difficult_intubation ? 'text-amber-700' : 'text-gray-900' }}">{{ $surgery->anaesthesia->difficult_intubation ? 'Yes' : 'No' }}</span>
+                                </div>
+                                @if($surgery->anaesthesia->difficult_intubation)
+                                    <div class="flex items-start">
+                                        <span class="flex-shrink-0 text-gray-500" style="width: 65px;">Methods:</span>
+                                        <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->intubationMethods->pluck('method_name')->implode(', ') ?: 'Not recorded' }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @endif
 
-    <h4 class="mb-3 text-sm font-bold text-gray-900">
-        Regional Details
-    </h4>
+                    @if(in_array($surgery->anaesthesia->mode, ['Regional', 'GA + Regional']))
+                    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 mb-4">
+                        <h4 class="mb-3 text-sm font-bold text-gray-900">Regional Details</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start">
+                                <span class="flex-shrink-0 text-gray-500" style="width: 55px;">Types:</span>
+                                <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->regionalTypes->pluck('name')->implode(', ') ?: 'Not recorded' }}</span>
+                            </div>
+                            @if($surgery->anaesthesia->regional_other_details)
+                                <div class="flex items-start">
+                                    <span class="flex-shrink-0 text-gray-500" style="width: 55px;">Other:</span>
+                                    <span class="font-semibold text-gray-900">{{ $surgery->anaesthesia->regional_other_details }}</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
 
-    <div class="space-y-2 text-sm">
-
-        <div class="flex items-start">
-            <span class="flex-shrink-0 text-gray-500" style="width: 55px;">
-                Types:
-            </span>
-
-            <span class="font-semibold text-gray-900">
-                {{ $surgery->anaesthesia->regionalTypes->pluck('name')->implode(', ') ?: 'Not recorded' }}
-            </span>
-        </div>
-
-        @if($surgery->anaesthesia->regional_other_details)
-            <div class="flex items-start">
-                <span class="flex-shrink-0 text-gray-500" style="width: 55px;">
-                    Other:
-                </span>
-
-                <span class="font-semibold text-gray-900">
-                    {{ $surgery->anaesthesia->regional_other_details }}
-                </span>
-            </div>
-        @endif
-
-    </div>
-
-</div>
+                    @if($surgery->anaesthesia->notes)
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <span class="text-sm font-semibold text-gray-700 block mb-1">Additional Notes</span>
+                        <p class="text-sm text-gray-800 whitespace-pre-wrap">{{ $surgery->anaesthesia->notes }}</p>
+                    </div>
                     @endif
                 </div>
-
-                @if($surgery->anaesthesia->notes)
-                <div class="mt-4 pt-4 border-t border-gray-100">
-                    <span class="text-sm font-semibold text-gray-700 block mb-1">
-    Additional Notes
-</span>
-                    <p class="text-sm text-gray-800 whitespace-pre-wrap">{{ $surgery->anaesthesia->notes }}</p>
-                </div>
-                @endif
-            </div>
             </div>
             @endif
 

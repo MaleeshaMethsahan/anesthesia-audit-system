@@ -81,7 +81,7 @@ class AuditFormController extends Controller
             'patient.sex' => 'required|in:M,F',
             'surgery.operation_name' => 'required',
             'surgery.surgery_type' => 'required|in:Em,Elect',
-            'anaesthesia.mode' => 'required|in:GA,Regional',
+            'anaesthesia.mode' => 'required|in:GA,Regional,GA + Regional',
         ]);
 
         try {

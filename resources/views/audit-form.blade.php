@@ -131,28 +131,34 @@
                                     value="{{ old('surgery.date_of_surgery') ?? date('Y-m-d') }}">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Surgery
-                                    Type <span class="text-red-500">*</span></label>
-                                <select name="surgery[surgery_type]" required
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                    <option value="">Select</option>
-                                    <option value="Em" {{ old('surgery.surgery_type')=='Em' ? 'selected' : '' }}>
-                                        Emergency (Em)</option>
-                                    <option value="Elect" {{ old('surgery.surgery_type')=='Elect' ? 'selected' : '' }}>
-                                        Elective (Elect)</option>
-                                </select>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Surgery Type <span class="text-red-500">*</span></label>
+                                <div class="inline-flex p-1 bg-gray-100 dark:bg-gray-700/60 rounded-lg border border-gray-200 dark:border-gray-600 gap-1 w-full sm:w-auto">
+                                    <label class="cursor-pointer flex-1 sm:flex-initial">
+                                        <input type="radio" name="surgery[surgery_type]" value="Em" class="peer sr-only" required {{ old('surgery.surgery_type')=='Em' ? 'checked' : '' }}>
+                                        <span class="px-4 py-2 text-sm font-semibold rounded-md flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 peer-checked:bg-red-600 peer-checked:text-white peer-checked:shadow-sm">
+                                            Emergency (Em)
+                                        </span>
+                                    </label>
+                                    <label class="cursor-pointer flex-1 sm:flex-initial">
+                                        <input type="radio" name="surgery[surgery_type]" value="Elect" class="peer sr-only" required {{ old('surgery.surgery_type')=='Elect' ? 'checked' : '' }}>
+                                        <span class="px-4 py-2 text-sm font-semibold rounded-md flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:shadow-sm">
+                                            Elective (Elect)
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ASA
-                                    Grade</label>
-                                <select name="surgery[asa_grade]"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                    <option value="">None</option>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">ASA Grade</label>
+                                <div class="flex flex-wrap p-1 bg-gray-100 dark:bg-gray-700/60 rounded-lg border border-gray-200 dark:border-gray-600 gap-1">
                                     @foreach(['I','II','III','IV','V','VI','E'] as $asa)
-                                    <option value="{{ $asa }}" {{ old('surgery.asa_grade')==$asa ? 'selected' : '' }}>{{
-                                        $asa }}</option>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="surgery[asa_grade]" value="{{ $asa }}" class="peer sr-only" {{ old('surgery.asa_grade')==$asa ? 'checked' : '' }}>
+                                        <span class="px-3.5 py-1.5 text-sm font-bold rounded-md flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 peer-checked:bg-amber-600 peer-checked:text-white peer-checked:shadow-sm">
+                                            {{ $asa }}
+                                        </span>
+                                    </label>
                                     @endforeach
-                                </select>
+                                </div>
                             </div>
                         </div>
 
@@ -297,18 +303,28 @@
                         <div>
                             <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-3 border-b border-gray-200 dark:border-gray-700 pb-2">
                                 Mode of Anaesthesia</h4>
-                            <div class="w-full md:w-1/3 mb-4">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mode
-                                    <span class="text-red-500">*</span></label>
-                                <select name="anaesthesia[mode]" required
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                    id="anaesthesia-mode-select">
-                                    <option value="">Select Mode</option>
-                                    <option value="GA" {{ old('anaesthesia.mode')=='GA' ? 'selected' : '' }}>General
-                                        (GA)</option>
-                                    <option value="Regional" {{ old('anaesthesia.mode')=='Regional' ? 'selected' : ''
-                                        }}>Regional</option>
-                                </select>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mode <span class="text-red-500">*</span></label>
+                                <div class="inline-flex flex-wrap p-1 bg-gray-100 dark:bg-gray-700/60 rounded-lg border border-gray-200 dark:border-gray-600 gap-1">
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="anaesthesia[mode]" value="GA" class="peer sr-only anaesthesia-mode-radio" required {{ old('anaesthesia.mode')=='GA' ? 'checked' : '' }}>
+                                        <span class="px-4 py-2 text-sm font-semibold rounded-md flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 peer-checked:bg-amber-600 peer-checked:text-white peer-checked:shadow-sm">
+                                            General (GA)
+                                        </span>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="anaesthesia[mode]" value="Regional" class="peer sr-only anaesthesia-mode-radio" required {{ old('anaesthesia.mode')=='Regional' ? 'checked' : '' }}>
+                                        <span class="px-4 py-2 text-sm font-semibold rounded-md flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:shadow-sm">
+                                            Regional
+                                        </span>
+                                    </label>
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="anaesthesia[mode]" value="GA + Regional" class="peer sr-only anaesthesia-mode-radio" required {{ old('anaesthesia.mode')=='GA + Regional' ? 'checked' : '' }}>
+                                        <span class="px-4 py-2 text-sm font-semibold rounded-md flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 peer-checked:bg-purple-600 peer-checked:text-white peer-checked:shadow-sm">
+                                            General + Regional (GA + Regional)
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
 
                             <div class="bg-amber-50 dark:bg-gray-700/30 p-5 rounded-lg border border-amber-100 dark:border-gray-600 ga-section hidden"
@@ -478,36 +494,61 @@
 
                         <div>
                             <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-3 border-b border-red-200 dark:border-red-900/50 pb-2 text-red-700 dark:text-red-400">Adverse Events</h4>
-                            <div class="flex flex-wrap gap-4">
-                                @foreach($adverseEvents as $event)
-                                    <label class="flex items-center space-x-2">
-                                        <input type="checkbox" name="surgery_adverse_events[]"
-                                            value="{{ $event->event_id }}"
-                                            data-name="{{ strtolower($event->event_name) }}"
-                                            {{ in_array($event->event_id, old('surgery_adverse_events', [])) ? 'checked' : '' }}
-                                            class="adverse-event-cb rounded text-red-600 focus:ring-red-500 dark:bg-gray-700 dark:border-gray-600">
-                                        <span class="text-sm text-gray-600 dark:text-gray-400">{{ $event->event_name }}</span>
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Adverse Events Occurred?</label>
+                                <div class="inline-flex p-1 bg-gray-100 dark:bg-gray-700/60 rounded-lg border border-gray-200 dark:border-gray-600 gap-1">
+                                    @php
+                                        $hasAdverse = old('has_adverse_events') == 'yes' || count(old('surgery_adverse_events', [])) > 0 || old('surgery.adverse_event_other_details');
+                                    @endphp
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="has_adverse_events" value="no" class="peer sr-only adverse-events-toggle-radio" {{ !$hasAdverse ? 'checked' : '' }}>
+                                        <span class="px-5 py-2 text-sm font-semibold rounded-md flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 peer-checked:bg-green-600 peer-checked:text-white peer-checked:shadow-sm">
+                                            No
+                                        </span>
                                     </label>
-                                @endforeach
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="has_adverse_events" value="yes" class="peer sr-only adverse-events-toggle-radio" {{ $hasAdverse ? 'checked' : '' }}>
+                                        <span class="px-5 py-2 text-sm font-semibold rounded-md flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 peer-checked:bg-red-600 peer-checked:text-white peer-checked:shadow-sm">
+                                            Yes
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
 
-                            <div id="adverse-other-container" class="mt-4 pl-3 border-l-2 border-red-300 {{ old('surgery.adverse_event_other_details') ? '' : 'hidden' }}">
-                                <input type="text" name="surgery[adverse_event_other_details]"
-                                    value="{{ old('surgery.adverse_event_other_details') }}"
-                                    class="w-full md:w-1/2 text-sm rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                    placeholder="Please specify other adverse event(s)...">
+                            <div id="adverse-events-panel" class="{{ $hasAdverse ? '' : 'hidden' }}">
+                                <div class="flex flex-wrap gap-4">
+                                    @foreach($adverseEvents as $event)
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" name="surgery_adverse_events[]"
+                                                value="{{ $event->event_id }}"
+                                                data-name="{{ strtolower($event->event_name) }}"
+                                                {{ in_array($event->event_id, old('surgery_adverse_events', [])) ? 'checked' : '' }}
+                                                class="adverse-event-cb rounded text-red-600 focus:ring-red-500 dark:bg-gray-700 dark:border-gray-600">
+                                            <span class="text-sm text-gray-600 dark:text-gray-400">{{ $event->event_name }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+
+                                <div id="adverse-other-container" class="mt-4 pl-3 border-l-2 border-red-300 {{ old('surgery.adverse_event_other_details') ? '' : 'hidden' }}">
+                                    <input type="text" name="surgery[adverse_event_other_details]"
+                                        value="{{ old('surgery.adverse_event_other_details') }}"
+                                        class="w-full md:w-1/2 text-sm rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                        placeholder="Please specify other adverse event(s)...">
+                                </div>
                             </div>
                         </div>
 
                         <div>
                             <h4 class="font-semibold text-gray-800 dark:text-gray-200 mb-3 border-b border-gray-200 dark:border-gray-700 pb-2">Post Op Admission</h4>
-                            <div class="w-full md:w-1/3">
-                                <select name="surgery[post_op_admission]" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                    <option value="">None</option>
-                                    <option value="Ward" {{ old('surgery.post_op_admission') == 'Ward' ? 'selected' : '' }}>Ward</option>
-                                    <option value="HDU" {{ old('surgery.post_op_admission') == 'HDU' ? 'selected' : '' }}>HDU</option>
-                                    <option value="ICU" {{ old('surgery.post_op_admission') == 'ICU' ? 'selected' : '' }}>ICU</option>
-                                </select>
+                            <div class="inline-flex flex-wrap p-1 bg-gray-100 dark:bg-gray-700/60 rounded-lg border border-gray-200 dark:border-gray-600 gap-1">
+                                @foreach(['Ward', 'HDU', 'ICU'] as $admission)
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="surgery[post_op_admission]" value="{{ $admission }}" class="peer sr-only" {{ old('surgery.post_op_admission') == $admission ? 'checked' : '' }}>
+                                    <span class="px-5 py-2 text-sm font-semibold rounded-md flex items-center justify-center transition-all text-gray-600 dark:text-gray-300 peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:shadow-sm">
+                                        {{ $admission }}
+                                    </span>
+                                </label>
+                                @endforeach
                             </div>
                         </div>
 
@@ -713,26 +754,49 @@
             }
 
             // Anaesthesia Mode visibility toggling
-            const modeSelect = document.getElementById('anaesthesia-mode-select');
+            const modeRadios = document.querySelectorAll('.anaesthesia-mode-radio');
             const gaSection = document.getElementById('ga-section-container');
             const regionalSection = document.getElementById('regional-section-container');
 
             function updateAnaesthesiaMode() {
-                const mode = modeSelect.value;
-                if(mode === 'GA') {
+                let mode = '';
+                modeRadios.forEach(r => { if (r.checked) mode = r.value; });
+
+                if (mode === 'GA') {
                     gaSection.classList.remove('hidden');
                     regionalSection.classList.add('hidden');
-                } else if(mode === 'Regional') {
+                } else if (mode === 'Regional') {
                     regionalSection.classList.remove('hidden');
                     gaSection.classList.add('hidden');
+                } else if (mode === 'GA + Regional') {
+                    gaSection.classList.remove('hidden');
+                    regionalSection.classList.remove('hidden');
                 } else {
                     gaSection.classList.add('hidden');
                     regionalSection.classList.add('hidden');
                 }
             }
 
-            modeSelect.addEventListener('change', updateAnaesthesiaMode);
+            modeRadios.forEach(r => r.addEventListener('change', updateAnaesthesiaMode));
             updateAnaesthesiaMode(); // Run on init
+
+            // Adverse Events Yes/No Toggle Logic
+            const adverseRadios = document.querySelectorAll('.adverse-events-toggle-radio');
+            const adversePanel = document.getElementById('adverse-events-panel');
+
+            function updateAdverseEventsToggle() {
+                let hasAdverse = false;
+                adverseRadios.forEach(r => { if (r.checked && r.value === 'yes') hasAdverse = true; });
+                if (hasAdverse) {
+                    adversePanel.classList.remove('hidden');
+                } else {
+                    adversePanel.classList.add('hidden');
+                    document.querySelectorAll('.adverse-event-cb').forEach(cb => cb.checked = false);
+                }
+            }
+
+            adverseRadios.forEach(r => r.addEventListener('change', updateAdverseEventsToggle));
+            updateAdverseEventsToggle();
             
             // Difficult Intubation Toggle Logic
             const diffIntCheckbox = document.getElementById('difficult-intubation-checkbox');
