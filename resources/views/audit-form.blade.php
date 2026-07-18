@@ -338,14 +338,14 @@
                                             <label class="flex items-center space-x-2">
                                                 <input type="radio" name="anaesthesia[induction_type]" value="Gas" {{
                                                     old('anaesthesia.induction_type')=='Gas' ? 'checked' : '' }}
-                                                    class="text-amber-600 focus:ring-amber-500 dark:bg-gray-700">
-                                                <span class="text-sm">Gas</span>
+                                                    class="induction-type-radio text-amber-600 focus:ring-amber-500 dark:bg-gray-700">
+                                                <span class="text-sm text-gray-700 dark:text-gray-300">Gas</span>
                                             </label>
                                             <label class="flex items-center space-x-2">
                                                 <input type="radio" name="anaesthesia[induction_type]" value="IV" {{
                                                     old('anaesthesia.induction_type')=='IV' ? 'checked' : '' }}
-                                                    class="text-amber-600 focus:ring-amber-500 dark:bg-gray-700">
-                                                <span class="text-sm">IV</span>
+                                                    class="induction-type-radio text-amber-600 focus:ring-amber-500 dark:bg-gray-700">
+                                                <span class="text-sm text-gray-700 dark:text-gray-300">IV</span>
                                             </label>
                                         </div>
                                         <div id="induction-agents-container" class="flex flex-wrap gap-3 mt-2 pl-2 border-l-2 border-amber-200 {{ old('anaesthesia.induction_type') == 'IV' ? '' : 'hidden' }}">
@@ -393,16 +393,16 @@
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Maintenance</label>
                                         <div class="flex gap-4 mb-2">
                                             <label class="flex items-center space-x-2">
-                                                <input type="radio" name="anaesthesia[maintenance_route]" value="IV" {{
-                                                    old('anaesthesia.maintenance_route')=='IV' ? 'checked' : '' }}
+                                                <input type="radio" name="anaesthesia[maintenance_route]" value="TIVA" {{
+                                                    old('anaesthesia.maintenance_route')=='TIVA' ? 'checked' : '' }}
                                                     class="maintenance-route-radio text-amber-600 focus:ring-amber-500 dark:bg-gray-700">
-                                                <span class="text-sm">IV</span>
+                                                <span class="text-sm text-gray-700 dark:text-gray-300">TIVA</span>
                                             </label>
                                             <label class="flex items-center space-x-2">
                                                 <input type="radio" name="anaesthesia[maintenance_route]" value="Gas" {{
                                                     old('anaesthesia.maintenance_route')=='Gas' ? 'checked' : '' }}
                                                     class="maintenance-route-radio text-amber-600 focus:ring-amber-500 dark:bg-gray-700">
-                                                <span class="text-sm">Gas</span>
+                                                <span class="text-sm text-gray-700 dark:text-gray-300">Gas</span>
                                             </label>
                                         </div>
                                         <div id="maintenance-agents-container" class="flex flex-wrap gap-3 mt-2 pl-2 border-l-2 border-amber-200 {{ old('anaesthesia.maintenance_route')=='Gas' ? '' : 'hidden' }}">
@@ -479,7 +479,7 @@
                                             data-name="{{ strtolower($analgesic->name) }}"
                                             {{ in_array($analgesic->analgesic_id, old('surgery_analgesics', [])) ? 'checked' : '' }}
                                             class="analgesia-cb rounded text-teal-600 focus:ring-teal-500 dark:bg-gray-700 dark:border-gray-600">
-                                        <span class="text-sm text-gray-600 dark:text-gray-400">{{ $analgesic->name }}</span>
+                                        <span class="text-sm text-gray-700 dark:text-gray-300">{{ $analgesic->name }}</span>
                                     </label>
                                 @endforeach
                             </div>
