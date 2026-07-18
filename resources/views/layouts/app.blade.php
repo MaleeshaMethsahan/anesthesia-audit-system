@@ -15,13 +15,19 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900">
-        <div x-data="{ sidebarOpen: false }" class="min-h-screen">
+        <div x-data="{ 
+                sidebarOpen: false, 
+                sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true' 
+             }" 
+             x-init="$watch('sidebarCollapsed', value => localStorage.setItem('sidebarCollapsed', value))"
+             class="min-h-screen">
             
             <!-- Sidebar Navigation -->
             @include('layouts.navigation')
 
             <!-- Main Content Area (Offset for Desktop Sidebar) -->
-            <div class="md:pl-64 lg:pl-72 flex flex-col min-h-screen transition-all duration-300">
+            <div :class="sidebarCollapsed ? 'md:pl-20' : 'md:pl-64 lg:pl-72'" 
+                 class="flex flex-col min-h-screen transition-all duration-300 ease-in-out">
                 
                 <!-- Mobile Top Bar Header -->
                 <div class="sticky top-0 z-30 flex items-center justify-between h-16 px-4 bg-slate-900 border-b border-slate-800 md:hidden text-white shadow-md">
