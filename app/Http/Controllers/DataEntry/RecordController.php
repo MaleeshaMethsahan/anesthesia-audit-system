@@ -4,6 +4,7 @@ namespace App\Http\Controllers\DataEntry;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
 
 class RecordController extends Controller
@@ -86,6 +87,14 @@ class RecordController extends Controller
     {
         $id = $row->surgery_id;
         $patientId = $row->patient_id;
+
+        if (isset($row->name) && !empty($row->name)) {
+            try {
+                $row->name = Crypt::decryptString($row->name);
+            } catch (\Throwable $e) {
+                // If not encrypted or decryption fails, leave original string
+            }
+        }
 
         $row->diseases = DB::table('patient_conditions as pc')
             ->join('medical_conditions as mc', 'pc.condition_id', '=', 'mc.condition_id')
