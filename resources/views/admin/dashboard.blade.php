@@ -19,10 +19,15 @@
                 <div class="p-6 text-gray-900">
                     <h3 class="text-lg font-bold text-red-600 mb-4">Welcome, Admin!</h3>
                     
-                    <!-- NEW BUTTON -->
-                    <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                        + Register New User
-                    </a>
+                    <!-- BUTTONS -->
+                    <div class="flex flex-wrap gap-3">
+                        <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
+                            + Register New User
+                        </a>
+                        <a href="{{ route('admin.reference-data.index') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 shadow-sm">
+                            ⚙️ Manage Clinical Master Data (Diseases, Anaesthesia, etc.)
+                        </a>
+                    </div>
 
                     <div class="mt-8 bg-white shadow rounded-lg p-6">
     <h3 class="text-lg font-bold mb-4">

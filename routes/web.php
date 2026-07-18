@@ -7,6 +7,7 @@ use App\Http\Controllers\Doctor\DashboardController as DoctorDashboard;
 use App\Http\Controllers\DataEntry\DashboardController as DataEntryDashboard;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LogController;
+use App\Http\Controllers\Admin\ReferenceDataController;
 use App\Http\Controllers\DataEntry\RecordController;
 use App\Http\Controllers\AuditFormController;
 
@@ -38,6 +39,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
             Route::post('/users', [UserController::class, 'store'])->name('users.store');
             Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
+            
+            // Reference Data Management (CRUD)
+            Route::get('/reference-data', [ReferenceDataController::class, 'index'])->name('reference-data.index');
+            Route::post('/reference-data/{type}', [ReferenceDataController::class, 'store'])->name('reference-data.store');
+            Route::put('/reference-data/{type}/{id}', [ReferenceDataController::class, 'update'])->name('reference-data.update');
+            Route::delete('/reference-data/{type}/{id}', [ReferenceDataController::class, 'destroy'])->name('reference-data.destroy');
     });
 
     // --- DOCTOR ---
