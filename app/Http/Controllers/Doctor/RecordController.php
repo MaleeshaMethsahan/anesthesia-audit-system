@@ -4,6 +4,7 @@ namespace App\Http\Controllers\DataEntry;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
 
 class RecordController extends Controller
@@ -23,6 +24,14 @@ class RecordController extends Controller
 
         // 2. Fetch sub-data for each surgery (Replicating your getList function)
         foreach ($surgeries as $row) {
+            if (isset($row->name) && !empty($row->name)) {
+                try {
+                    $row->name = Crypt::decryptString($row->name);
+                } catch (\Throwable $e) {
+                    // If not encrypted or decryption fails, leave original string
+                }
+            }
+
             $id = $row->surgery_id;
             $patient_id = $row->patient_id;
 

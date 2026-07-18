@@ -23,6 +23,13 @@ class Patient extends Model
         'phn',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'name' => 'encrypted',
+        ];
+    }
+
     public function surgeries(): HasMany
     {
         return $this->hasMany(Surgery::class, 'patient_id', 'patient_id');
