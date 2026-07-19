@@ -193,9 +193,9 @@
                 </div>
 
                 <!-- Footer -->
-                <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-400">
+                <!-- <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-400">
                     Data automatically synchronized with Anaesthesia Information System.
-                </div>
+                </div> -->
 
             </div>
         </div>
