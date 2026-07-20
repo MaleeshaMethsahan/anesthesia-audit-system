@@ -164,6 +164,9 @@
                                             <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.records.show', $row->surgery_id) : route('data_entry.records.show', $row->surgery_id) }}" class="text-[0.7rem] font-bold px-3 py-1 border border-blue-600 dark:border-blue-500 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 transition w-full text-center">
                                                 VIEW
                                             </a>
+                                            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.records.edit', $row->surgery_id) : route('data_entry.records.edit', $row->surgery_id) }}" class="text-[0.7rem] font-bold px-3 py-1 border border-amber-600 dark:border-amber-500 text-amber-600 dark:text-amber-400 rounded hover:bg-amber-600 hover:text-white dark:hover:bg-amber-500 transition w-full text-center">
+                                                EDIT
+                                            </a>
                                             <form method="POST" action="{{ auth()->user()->role === 'doctor' ? route('doctor.records.destroy', $row->surgery_id) : route('data_entry.records.destroy', $row->surgery_id) }}" class="w-full" onsubmit="return confirm('ARE YOU SURE? This will permanently delete this record.');">
                                                 @csrf
                                                 @method('DELETE')

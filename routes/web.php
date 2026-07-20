@@ -58,6 +58,8 @@ Route::middleware('auth')->group(function () {
             // View the list of clinical records and specific details of a record
             Route::get('/records', [RecordController::class, 'index'])->name('records.index');
             Route::get('/records/{surgeryId}', [RecordController::class, 'show'])->name('records.show');
+            Route::get('/records/{surgeryId}/edit', [RecordController::class, 'edit'])->name('records.edit');
+            Route::put('/records/{surgeryId}', [RecordController::class, 'update'])->name('records.update');
             Route::delete('/records/{surgeryId}', [RecordController::class, 'destroy'])->name('records.destroy');
 
             // Access and submit the Anesthesia Audit form
@@ -77,6 +79,8 @@ Route::middleware('auth')->group(function () {
             // View the list of clinical records and specific details of a record
             Route::get('/records', [RecordController::class, 'index'])->name('records.index');
             Route::get('/records/{surgeryId}', [RecordController::class, 'show'])->name('records.show');
+            Route::get('/records/{surgeryId}/edit', [RecordController::class, 'edit'])->name('records.edit');
+            Route::put('/records/{surgeryId}', [RecordController::class, 'update'])->name('records.update');
             Route::delete('/records/{surgeryId}', [RecordController::class, 'destroy'])->name('records.destroy');
 
             // Access and submit the Anesthesia Audit form
