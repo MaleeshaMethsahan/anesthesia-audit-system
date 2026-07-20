@@ -4,7 +4,7 @@
             <h2 class="font-bold text-xl text-gray-800 dark:text-gray-100 leading-tight uppercase tracking-wider">
                 Clinical Analytics Dashboard
             </h2>
-            <a href="{{ route('doctor.audit-form.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-5 rounded-xl shadow transition text-sm flex items-center gap-2">
+            <a href="{{ route('doctor.audit-form.start') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-5 rounded-xl shadow transition text-sm flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 + Add Patient Record
             </a>
@@ -21,7 +21,7 @@
                     <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-1">Anaesthesia Audit System • Real-Time Clinical Performance Overview</p>
                 </div>
                 <div class="flex flex-wrap gap-3">
-                    <a href="{{ route('doctor.audit-form.create') }}" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow transition flex items-center gap-2">
+                    <a href="{{ route('doctor.audit-form.start') }}" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow transition flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         + Add Patient Record
                     </a>
@@ -121,7 +121,7 @@
                                 <input type="text" name="search" placeholder="Search PHN / Patient..." class="w-full bg-slate-100 dark:bg-gray-700 border-none rounded-xl text-xs sm:text-sm py-2.5 pl-3 pr-8 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-indigo-500">
                                 <svg class="w-4 h-4 text-slate-400 absolute right-2.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </form>
-                            <a href="{{ route('doctor.audit-form.create') }}" class="p-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow transition" title="Add Record">
+                            <a href="{{ route('doctor.audit-form.start') }}" class="p-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow transition" title="Add Record">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                             </a>
                         </div>

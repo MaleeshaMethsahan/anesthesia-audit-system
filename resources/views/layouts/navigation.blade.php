@@ -92,7 +92,7 @@
                     <span x-show="!sidebarCollapsed" class="truncate">Dashboard</span>
                 </a>
 
-                <a href="{{ route('doctor.audit-form.create') }}" 
+                <a href="{{ route('doctor.audit-form.start') }}" 
                    title="Add Patient Record"
                    :class="sidebarCollapsed ? 'justify-center px-0' : ''"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('doctor.audit-form.*') ? 'bg-amber-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
@@ -160,7 +160,7 @@
                     <span x-show="!sidebarCollapsed" class="truncate">Dashboard</span>
                 </a>
 
-                <a href="{{ route('data_entry.audit-form.create') }}" 
+                <a href="{{ route('data_entry.audit-form.start') }}" 
                    title="Add Patient Record"
                    :class="sidebarCollapsed ? 'justify-center px-0' : ''"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('data_entry.audit-form.*') ? 'bg-amber-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
