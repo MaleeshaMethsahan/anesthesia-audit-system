@@ -105,13 +105,26 @@
                                     </td>
 
                                     <!-- Conditions -->
-                                    <td class="px-4 py-4 whitespace-normal max-w-[150px]">
-                                        <div class="flex flex-wrap gap-1">
-                                            @if($row->diseases->isEmpty()) <span class="text-gray-400 dark:text-gray-500">-</span> @endif
-                                            @foreach($row->diseases as $d)
-                                                <span class="text-[0.65rem] px-1.5 py-0.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-gray-600 dark:text-gray-300">{{ $d }}</span>
-                                            @endforeach
-                                        </div>
+                                    <td class="px-4 py-4 whitespace-normal max-w-[170px]" x-data="{ expanded: false }">
+                                        @if($row->diseases->isEmpty()) 
+                                            <span class="text-gray-400 dark:text-gray-500">-</span> 
+                                        @else
+                                            <div class="flex flex-wrap gap-1">
+                                                @foreach($row->diseases as $index => $d)
+                                                    <span x-show="expanded || {{ $index }} < 5" 
+                                                          class="text-[0.65rem] px-1.5 py-0.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-gray-600 dark:text-gray-300">
+                                                        {{ $d }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                            @if($row->diseases->count() > 5)
+                                                <button @click="expanded = !expanded" 
+                                                        type="button" 
+                                                        class="mt-1 text-[0.65rem] font-bold text-indigo-600 dark:text-indigo-400 hover:underline focus:outline-none flex items-center gap-0.5">
+                                                    <span x-text="expanded ? 'Show Less' : '+ {{ $row->diseases->count() - 5 }} More'"></span>
+                                                </button>
+                                            @endif
+                                        @endif
                                     </td>
 
                                     <!-- Monitoring -->
