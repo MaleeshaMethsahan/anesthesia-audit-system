@@ -1,10 +1,10 @@
 <!-- Sidebar Backdrop for Mobile -->
 <div x-show="sidebarOpen" 
      @click="sidebarOpen = false" 
-     x-transition:enter="transition-opacity ease-linear duration-300"
+     x-transition:enter="transition-opacity ease-linear duration-200"
      x-transition:enter-start="opacity-0"
      x-transition:enter-end="opacity-100"
-     x-transition:leave="transition-opacity ease-linear duration-300"
+     x-transition:leave="transition-opacity ease-linear duration-200"
      x-transition:leave-start="opacity-100"
      x-transition:leave-end="opacity-0"
      class="fixed inset-0 z-40 bg-gray-900/80 md:hidden" 
@@ -15,11 +15,11 @@
             sidebarOpen ? 'translate-x-0' : '-translate-x-full',
             sidebarCollapsed ? 'w-20' : 'w-64 md:w-72'
        ]" 
-       class="fixed inset-y-0 left-0 z-50 bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 flex flex-col justify-between shadow-2xl transition-all duration-300 ease-in-out md:translate-x-0 border-r border-gray-200 dark:border-slate-800">
+       class="fixed inset-y-0 left-0 z-50 bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 flex flex-col justify-between shadow-2xl transition-all duration-200 ease-in-out md:translate-x-0 border-r border-gray-200 dark:border-slate-800">
 
     <div>
         <!-- App Logo & Title + Collapse Toggle -->
-        <div class="h-16 flex items-center bg-gray-50 dark:bg-slate-950/50 border-b border-gray-200 dark:border-slate-800 transition-all duration-300"
+        <div class="h-16 flex items-center bg-gray-50 dark:bg-slate-950/50 border-b border-gray-200 dark:border-slate-800 transition-all duration-200"
              :class="sidebarCollapsed ? 'justify-center px-2' : 'justify-between px-4'">
             
             <!-- When Collapsed: Single Centered Button to Expand Sidebar -->
