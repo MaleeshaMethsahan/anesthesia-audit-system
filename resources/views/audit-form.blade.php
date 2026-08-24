@@ -1014,6 +1014,8 @@
                 analgesiaCheckboxes.forEach(cb => {
                     cb.addEventListener('change', checkAnalgesiaOthers);
                 });
-            });
+                checkAnalgesiaOthers(); // Run on page load
+            }
+        });
     </script>
 </x-app-layout>
