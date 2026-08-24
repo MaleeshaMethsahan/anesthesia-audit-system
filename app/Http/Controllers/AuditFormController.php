@@ -76,22 +76,24 @@ class AuditFormController extends Controller
     {
         $query = trim((string) $request->query('query', ''));
 
-        if (strlen($query) < 2) {
+        if (strlen($query) < 1) {
             return response()->json([]);
         }
 
+        // Use Eloquent so the name encryption cast decrypts automatically
         $patients = Patient::query()
-            ->where('phn', 'like', '%' . $query . '%')
+            ->where('phn', 'like', $query . '%')
             ->orderBy('phn')
             ->limit(10)
-            ->get(['phn', 'name', 'sex']);
+            ->get(['phn', 'name', 'age', 'sex']);
 
         return response()->json(
             $patients->map(function (Patient $patient) {
                 return [
-                    'phn' => $patient->phn,
-                    'name' => $patient->name,
-                    'sex' => $patient->sex,
+                    'phn'  => $patient->phn,
+                    'name' => $patient->name,   // decrypted via cast
+                    'age'  => $patient->age,
+                    'sex'  => $patient->sex,
                 ];
             })
         );
