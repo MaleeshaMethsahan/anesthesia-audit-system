@@ -47,13 +47,15 @@
                             Patient Details
                         </h3>
                     </div>
-                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                    <div class="p-6 space-y-4">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                         <div class="lg:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Patient Name
                                 <span class="text-red-500">*</span></label>
                             <input type="text" name="patient[name]" id="patient-name-input" required
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                value="{{ old('patient.name') }}" placeholder="Full Name">
+                                value="{{ old('patient.name', $prefillPatient?->name) }}" placeholder="Full Name">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PHN <span
@@ -62,14 +64,14 @@
                                 data-suggestions-url="{{ route($routePrefix . 'audit-form.phn-suggestions') }}"
                                 list="phn-suggestions-list" autocomplete="off" required
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                value="{{ old('patient.phn') }}" placeholder="e.g. 12345">
+                                value="{{ old('patient.phn', $prefillPatient?->phn) }}" placeholder="e.g. 12345" {{ $prefillPatient ? 'readonly' : '' }}>
                             <datalist id="phn-suggestions-list"></datalist>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Age</label>
                             <input type="number" name="patient[age]" id="patient-age-input"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                value="{{ old('patient.age') }}">
+                                value="{{ old('patient.age', $prefillPatient?->age) }}">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sex <span
@@ -77,16 +79,17 @@
                             <select name="patient[sex]" id="patient-sex-select" required
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                 <option value="">Select</option>
-                                <option value="M" {{ old('patient.sex')=='M' ? 'selected' : '' }}>Male</option>
-                                <option value="F" {{ old('patient.sex')=='F' ? 'selected' : '' }}>Female</option>
+                                <option value="M" {{ old('patient.sex', $prefillPatient?->sex)=='M' ? 'selected' : '' }}>Male</option>
+                                <option value="F" {{ old('patient.sex', $prefillPatient?->sex)=='F' ? 'selected' : '' }}>Female</option>
                             </select>
                         </div>
                         <div class="md:col-span-2 lg:col-span-2">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">BHT (Bed Head
                                 Ticket)</label>
-                            <input type="text" name="patient[bht]"
+                            <input type="text" name="patient[bht]" id="patient-bht-input"
                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                value="{{ old('patient.bht') }}" placeholder="BHT Number">
+                                value="{{ old('patient.bht', $prefillPatient?->bht) }}" placeholder="BHT Number">
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -1011,8 +1014,6 @@
                 analgesiaCheckboxes.forEach(cb => {
                     cb.addEventListener('change', checkAnalgesiaOthers);
                 });
-                checkAnalgesiaOthers(); // Run on page load
-            }
-        });
+            });
     </script>
 </x-app-layout>

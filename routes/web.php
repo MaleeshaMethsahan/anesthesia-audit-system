@@ -63,8 +63,10 @@ Route::middleware('auth')->group(function () {
             Route::delete('/records/{surgeryId}', [RecordController::class, 'destroy'])->name('records.destroy');
 
             // Access and submit the Anesthesia Audit form
+            Route::get('/audit-form/start', [AuditFormController::class, 'startCreate'])->name('audit-form.start');
             Route::get('/audit-form', [AuditFormController::class, 'create'])->name('audit-form.create');
                 Route::get('/audit-form/phn-suggestions', [AuditFormController::class, 'phnSuggestions'])->name('audit-form.phn-suggestions');
+                Route::get('/audit-form/patient-lookup', [AuditFormController::class, 'lookupPatient'])->name('audit-form.patient-lookup');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
     });
 
@@ -84,8 +86,10 @@ Route::middleware('auth')->group(function () {
             Route::delete('/records/{surgeryId}', [RecordController::class, 'destroy'])->name('records.destroy');
 
             // Access and submit the Anesthesia Audit form
+            Route::get('/audit-form/start', [AuditFormController::class, 'startCreate'])->name('audit-form.start');
             Route::get('/audit-form', [AuditFormController::class, 'create'])->name('audit-form.create');
                 Route::get('/audit-form/phn-suggestions', [AuditFormController::class, 'phnSuggestions'])->name('audit-form.phn-suggestions');
+                Route::get('/audit-form/patient-lookup', [AuditFormController::class, 'lookupPatient'])->name('audit-form.patient-lookup');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
     });
 
