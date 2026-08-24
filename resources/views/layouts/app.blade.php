@@ -47,7 +47,7 @@
 
             <!-- Main Content Area (Offset for Desktop Sidebar) -->
             <div :class="sidebarCollapsed ? 'md:pl-20' : 'md:pl-64 lg:pl-72'" 
-                 class="flex flex-col min-h-screen transition-all duration-300 ease-in-out">
+                 class="flex flex-col min-h-screen transition-all duration-200 ease-in-out">
                 
                 <!-- Mobile Top Bar Header -->
                 <div class="sticky top-0 z-30 flex items-center justify-between h-16 px-4 bg-slate-900 border-b border-slate-800 md:hidden text-white shadow-md">

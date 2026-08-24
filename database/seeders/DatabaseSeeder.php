@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Seed Admin User
         User::updateOrCreate([
-            'email' => 'admindoa@jaffna.org',
+            'email' => 'admin@gmail.com',
         ], [
-            'name' => 'DOA Admin',
-            'password' => 'admin123@doa', // Ensure this is hashed in your User model mutator, or use Hash::make() here if not
+            'name' => 'admin',
+            'password' => 'admin@gmail', // Ensure this is hashed in your User model mutator, or use Hash::make() here if not
             'role' => 'system_admin',
             'email_verified_at' => now(),
         ]);

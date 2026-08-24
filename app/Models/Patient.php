@@ -14,7 +14,7 @@ class Patient extends Model
 {
     protected $primaryKey = 'patient_id';
     public const UPDATED_AT = null;
-    
+
     protected $fillable = [
         'name',
         'age',
@@ -38,6 +38,6 @@ class Patient extends Model
     public function conditions(): BelongsToMany
     {
         return $this->belongsToMany(MedicalCondition::class, 'patient_conditions', 'patient_id', 'condition_id')
-                    ->withPivot('recorded_at');
+            ->withPivot('recorded_at');
     }
 }

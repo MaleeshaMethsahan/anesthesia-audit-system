@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Surgery extends Model
 {
     protected $primaryKey = 'surgery_id';
-    public const UPDATED_AT = null;
+    public const CREATED_AT = 'created_at';
+    public const UPDATED_AT = 'updated_at';
     
     protected $fillable = [
         'patient_id',
@@ -27,6 +28,8 @@ class Surgery extends Model
         'post_op_admission',
         'adverse_event_other_details',
         'analgesia_other_details',
+        'updated_at',
+        'update_count',
     ];
 
     public function patient(): BelongsTo
