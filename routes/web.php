@@ -65,6 +65,7 @@ Route::middleware('auth')->group(function () {
 
             // Patients Directory & Patient Profile
             Route::get('/patients', [PatientController::class, 'index'])->name('patients.index');
+            Route::get('/patients/suggestions', [PatientController::class, 'suggestions'])->name('patients.suggestions');
             Route::get('/patients/{patient}', [PatientController::class, 'show'])->name('patients.show');
 
             // Access and submit the Anesthesia Audit form
