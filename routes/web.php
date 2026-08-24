@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Admin\ReferenceDataController;
 use App\Http\Controllers\DataEntry\RecordController;
 use App\Http\Controllers\AuditFormController;
+use App\Http\Controllers\Doctor\PatientController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -61,6 +62,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/records/{surgeryId}/edit', [RecordController::class, 'edit'])->name('records.edit');
             Route::put('/records/{surgeryId}', [RecordController::class, 'update'])->name('records.update');
             Route::delete('/records/{surgeryId}', [RecordController::class, 'destroy'])->name('records.destroy');
+
+            // Patients Directory & Patient Profile
+            Route::get('/patients', [PatientController::class, 'index'])->name('patients.index');
+            Route::get('/patients/{patient}', [PatientController::class, 'show'])->name('patients.show');
 
             // Access and submit the Anesthesia Audit form
             Route::get('/audit-form/start', [AuditFormController::class, 'startCreate'])->name('audit-form.start');

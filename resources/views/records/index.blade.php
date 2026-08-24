@@ -13,22 +13,26 @@
 
     <!-- PHP Helper Functions Translated -->
     @php
-        function getASABadge($grade) {
-            $class = "bg-gray-500 text-white";
-            if ($grade == 'I') $class = "bg-green-500 text-white";
-            if ($grade == 'II') $class = "bg-blue-500 text-white";
-            if ($grade == 'III') $class = "bg-amber-500 text-white";
-            if (in_array($grade, ['IV', 'V', 'VI', 'E'])) $class = "bg-red-500 text-white";
-            return '<span class="px-2 py-0.5 rounded text-xs font-bold ' . $class . '">ASA ' . htmlspecialchars($grade) . '</span>';
+        if (!function_exists('getASABadge')) {
+            function getASABadge($grade) {
+                $class = "bg-gray-500 text-white";
+                if ($grade == 'I') $class = "bg-green-500 text-white";
+                if ($grade == 'II') $class = "bg-blue-500 text-white";
+                if ($grade == 'III') $class = "bg-amber-500 text-white";
+                if (in_array($grade, ['IV', 'V', 'VI', 'E'])) $class = "bg-red-500 text-white";
+                return '<span class="px-2 py-0.5 rounded text-xs font-bold ' . $class . '">ASA ' . htmlspecialchars($grade) . '</span>';
+            }
         }
 
-        function getAdmissionBadge($type) {
-            if (!$type) return "";
-            $class = "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600";
-            if ($type == 'ICU') $class = "bg-red-600 text-white border-red-600";
-            if ($type == 'HDU') $class = "bg-amber-500 text-white border-amber-500";
-            if ($type == 'Ward') $class = "bg-blue-600 text-white border-blue-600";
-            return '<span class="px-2 py-0.5 rounded text-xs font-bold ' . $class . '">' . htmlspecialchars($type) . '</span>';
+        if (!function_exists('getAdmissionBadge')) {
+            function getAdmissionBadge($type) {
+                if (!$type) return "";
+                $class = "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600";
+                if ($type == 'ICU') $class = "bg-red-600 text-white border-red-600";
+                if ($type == 'HDU') $class = "bg-amber-500 text-white border-amber-500";
+                if ($type == 'Ward') $class = "bg-blue-600 text-white border-blue-600";
+                return '<span class="px-2 py-0.5 rounded text-xs font-bold ' . $class . '">' . htmlspecialchars($type) . '</span>';
+            }
         }
     @endphp
 
