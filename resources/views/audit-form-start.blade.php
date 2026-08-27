@@ -22,7 +22,7 @@
             </div>
 
             {{-- Lookup Card --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700">
                 <div class="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-5">
                     <h3 class="text-xl font-bold text-white flex items-center gap-2">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,7 +66,7 @@
                             {{-- Dropdown suggestion list --}}
                             <ul
                                 id="suggestions-list"
-                                class="hidden absolute z-50 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg overflow-hidden"
+                                class="hidden absolute z-50 mt-1 w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg max-h-60 overflow-y-auto"
                                 role="listbox"
                                 aria-label="Patient suggestions"
                             ></ul>
