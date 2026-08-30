@@ -32,7 +32,26 @@ class PatientsDirectoryTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_doctor_can_view_patients_directory_with_unique_patients(): void
+    public function test_patient_with_zero_audits_appears_in_directory(): void
+    {
+        $patient = Patient::create([
+            'name' => 'EYTY',
+            'phn' => '2222',
+            'age' => 96,
+            'sex' => 'M',
+            'bht' => 'BHT-9999',
+        ]);
+
+        $response = $this->actingAs($this->doctor)->get(route('doctor.patients.index'));
+
+        $response->assertOk();
+        $response->assertSee('2222');
+        $response->assertSee('EYTY');
+        $response->assertSee('0 Audits');
+        $response->assertSee('96Y');
+    }
+
+    public function test_doctor_can_view_patients_directory_with_unique_patients_and_counts(): void
     {
         $patient = Patient::create([
             'name' => 'TESTING2',
@@ -79,7 +98,7 @@ class PatientsDirectoryTest extends TestCase
         $response->assertSee('3 Audits');
     }
 
-    public function test_search_by_phn_and_name(): void
+    public function test_search_by_phn_single_digit_and_name(): void
     {
         Patient::create([
             'name' => 'ALICE SMITH',
@@ -95,6 +114,12 @@ class PatientsDirectoryTest extends TestCase
             'sex' => 'M',
         ]);
 
+        // Search by single digit "1"
+        $responseDigit = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['search' => '1']));
+        $responseDigit->assertOk();
+        $responseDigit->assertSee('BOB JONES');
+        $responseDigit->assertDontSee('ALICE SMITH');
+
         // Search by partial PHN
         $responsePhn = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['search' => '998']));
         $responsePhn->assertOk();
@@ -102,15 +127,92 @@ class PatientsDirectoryTest extends TestCase
         $responsePhn->assertDontSee('BOB JONES');
 
         // Search by partial name (case insensitive)
-        $responseName = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['search' => 'bob']));
+        $responseName = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['search' => 'alice']));
         $responseName->assertOk();
-        $responseName->assertSee('BOB JONES');
-        $responseName->assertDontSee('ALICE SMITH');
+        $responseName->assertSee('ALICE SMITH');
+        $responseName->assertDontSee('BOB JONES');
 
         // Search with no results
         $responseEmpty = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['search' => 'nonexistent']));
         $responseEmpty->assertOk();
         $responseEmpty->assertSee('No patients match your search.');
+    }
+
+    public function test_autocomplete_suggestions_endpoint(): void
+    {
+        $patient1 = Patient::create([
+            'name' => 'TESTING2',
+            'phn' => '11111',
+            'age' => 56,
+            'sex' => 'F',
+        ]);
+
+        $patient2 = Patient::create([
+            'name' => 'ANOTHER PATIENT',
+            'phn' => '223344',
+            'age' => 40,
+            'sex' => 'M',
+        ]);
+
+        // Suggest by PHN
+        $response = $this->actingAs($this->doctor)->getJson(route('doctor.patients.suggestions', ['query' => '111']));
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'phn' => '11111',
+            'name' => 'TESTING2',
+        ]);
+        $response->assertJsonMissing([
+            'phn' => '223344',
+        ]);
+
+        // Suggest by Name
+        $responseName = $this->actingAs($this->doctor)->getJson(route('doctor.patients.suggestions', ['query' => 'another']));
+        $responseName->assertOk();
+        $responseName->assertJsonFragment([
+            'phn' => '223344',
+            'name' => 'ANOTHER PATIENT',
+        ]);
+    }
+
+    public function test_sorting_options_work_and_keep_zero_audit_patients(): void
+    {
+        $p1 = Patient::create(['name' => 'ZACK', 'phn' => '3000', 'age' => 25, 'sex' => 'M']);
+        $p2 = Patient::create(['name' => 'ALEX', 'phn' => '1000', 'age' => 30, 'sex' => 'F']);
+        $p3 = Patient::create(['name' => 'MARY', 'phn' => '2000', 'age' => 35, 'sex' => 'F']);
+
+        // p1 has 2 surgeries
+        Surgery::create(['patient_id' => $p1->patient_id, 'operation_name' => 'Op 1', 'surgery_type' => 'Elect', 'date_of_surgery' => '2026-05-01']);
+        Surgery::create(['patient_id' => $p1->patient_id, 'operation_name' => 'Op 2', 'surgery_type' => 'Em', 'date_of_surgery' => '2026-08-01']);
+
+        // p2 has 1 surgery
+        Surgery::create(['patient_id' => $p2->patient_id, 'operation_name' => 'Op 3', 'surgery_type' => 'Elect', 'date_of_surgery' => '2026-06-01']);
+
+        // p3 has 0 surgeries
+
+        // 1. Sort by name_asc
+        $resNameAsc = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['sort' => 'name_asc']));
+        $resNameAsc->assertOk();
+        $resNameAsc->assertSeeInOrder(['ALEX', 'MARY', 'ZACK']);
+
+        // 2. Sort by name_desc
+        $resNameDesc = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['sort' => 'name_desc']));
+        $resNameDesc->assertOk();
+        $resNameDesc->assertSeeInOrder(['ZACK', 'MARY', 'ALEX']);
+
+        // 3. Sort by phn_asc
+        $resPhnAsc = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['sort' => 'phn_asc']));
+        $resPhnAsc->assertOk();
+        $resPhnAsc->assertSeeInOrder(['1000', '2000', '3000']);
+
+        // 4. Sort by audits_desc
+        $resAuditsDesc = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['sort' => 'audits_desc']));
+        $resAuditsDesc->assertOk();
+        $resAuditsDesc->assertSeeInOrder(['2 Audits', '1 Audit', '0 Audits']);
+
+        // 5. Sort by surgery_desc (Latest surgery should have ZACK (08-01), ALEX (06-01), then MARY (0 audits))
+        $resSurgeryDesc = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['sort' => 'surgery_desc']));
+        $resSurgeryDesc->assertOk();
+        $resSurgeryDesc->assertSeeInOrder(['ZACK', 'ALEX', 'MARY']);
     }
 
     public function test_patient_profile_displays_details_and_surgery_history(): void
@@ -182,7 +284,7 @@ class PatientsDirectoryTest extends TestCase
         $response->assertSee(route('doctor.records.show', $surgery2->surgery_id));
     }
 
-    public function test_patient_profile_with_no_conditions_and_no_audits(): void
+    public function test_patient_profile_with_no_conditions_and_zero_audits(): void
     {
         $patient = Patient::create([
             'name' => 'NEW PATIENT',
@@ -196,6 +298,7 @@ class PatientsDirectoryTest extends TestCase
         $response->assertOk();
         $response->assertSee('No medical conditions recorded.');
         $response->assertSee('No audit records found for this patient.');
+        $response->assertSee('0 Records');
     }
 
     public function test_pagination_and_query_string_preservation(): void
@@ -210,13 +313,13 @@ class PatientsDirectoryTest extends TestCase
         }
 
         // Page 1 should have 15 items
-        $responsePage1 = $this->actingAs($this->doctor)->get(route('doctor.patients.index'));
+        $responsePage1 = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['sort' => 'newest_registered']));
         $responsePage1->assertOk();
-        $responsePage1->assertSee('Registered Patients: 20');
-        $responsePage1->assertSee('PATIENT 20'); // descending by patient_id
+        $responsePage1->assertSee('20 Registered Patients');
+        $responsePage1->assertSee('PATIENT 20');
 
         // Page 2 should have remaining 5 items
-        $responsePage2 = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['page' => 2]));
+        $responsePage2 = $this->actingAs($this->doctor)->get(route('doctor.patients.index', ['sort' => 'newest_registered', 'page' => 2]));
         $responsePage2->assertOk();
         $responsePage2->assertSee('PATIENT 1');
     }
