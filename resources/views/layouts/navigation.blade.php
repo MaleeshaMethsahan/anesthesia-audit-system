@@ -77,8 +77,31 @@
             </span>
         </div>
 
+        <!-- Quick Global Search Input in Sidebar -->
+        <div class="p-3 border-b border-gray-200 dark:border-slate-800/80">
+            <form action="{{ route('global-search.index') }}" method="GET" class="relative">
+                <div x-show="!sidebarCollapsed" class="relative">
+                    <input type="text" 
+                           name="q" 
+                           placeholder="Global search audits..." 
+                           value="{{ request('q') }}"
+                           class="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-slate-500 rounded-lg border border-transparent focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-1 focus:ring-indigo-500 transition shadow-inner">
+                    <button type="submit" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400" title="Search">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </button>
+                </div>
+                <div x-show="sidebarCollapsed" class="flex justify-center">
+                    <a href="{{ route('global-search.index') }}" 
+                       class="p-2 text-gray-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition"
+                       title="Global Search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </a>
+                </div>
+            </form>
+        </div>
+
         <!-- Navigation Links Menu -->
-        <nav class="p-3 space-y-1.5 overflow-y-auto max-h-[calc(100vh-14rem)]">
+        <nav class="p-3 space-y-1.5 overflow-y-auto max-h-[calc(100vh-16rem)]">
             
             @if(auth()->user()->role === 'doctor')
                 <!-- DOCTOR SPECIFIC MENU -->
@@ -132,11 +155,11 @@
                     <span x-show="!sidebarCollapsed" class="truncate">Surgical Statistics</span>
                 </a>
 
-                <a href="{{ route('doctor.records.index') }}" 
+                <a href="{{ route('global-search.index') }}" 
                    title="Global Search"
                    :class="sidebarCollapsed ? 'justify-center px-0' : ''"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white">
-                    <svg class="w-5 h-5 text-indigo-500 dark:text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
+                    <svg class="w-5 h-5 {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'text-white' : 'text-indigo-500 dark:text-indigo-400' }} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     <span x-show="!sidebarCollapsed" class="truncate">Global Search</span>
                 </a>
 
@@ -174,6 +197,14 @@
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('data_entry.records.*') ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
                     <svg class="w-5 h-5 text-blue-500 dark:text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path></svg>
                     <span x-show="!sidebarCollapsed" class="truncate">View Database</span>
+                </a>
+
+                <a href="{{ route('global-search.index') }}" 
+                   title="Global Search"
+                   :class="sidebarCollapsed ? 'justify-center px-0' : ''"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
+                    <svg class="w-5 h-5 {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'text-white' : 'text-indigo-500 dark:text-indigo-400' }} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <span x-show="!sidebarCollapsed" class="truncate">Global Search</span>
                 </a>
 
                 <a href="{{ route('profile.edit') }}" 
@@ -218,6 +249,14 @@
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.logs.*') ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
                     <svg class="w-5 h-5 text-amber-500 dark:text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     <span x-show="!sidebarCollapsed" class="truncate">View Login Logs</span>
+                </a>
+
+                <a href="{{ route('global-search.index') }}" 
+                   title="Global Search"
+                   :class="sidebarCollapsed ? 'justify-center px-0' : ''"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
+                    <svg class="w-5 h-5 {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'text-white' : 'text-indigo-500 dark:text-indigo-400' }} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <span x-show="!sidebarCollapsed" class="truncate">Global Search</span>
                 </a>
 
                 <a href="{{ route('profile.edit') }}" 
