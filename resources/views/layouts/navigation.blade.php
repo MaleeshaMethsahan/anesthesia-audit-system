@@ -116,20 +116,20 @@
                     <span x-show="!sidebarCollapsed" class="truncate">Patients Directory</span>
                 </a>
 
-                <a href="{{ route('doctor.dashboard') }}" 
-                   title="Reports & Analytics"
+                <a href="{{ route('doctor.reports.index') }}" 
+                   title="Reports"
                    :class="sidebarCollapsed ? 'justify-center px-0' : ''"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white">
-                    <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    <span x-show="!sidebarCollapsed" class="truncate">Reports & Analytics</span>
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('doctor.reports.*') ? 'bg-emerald-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
+                    <svg class="w-5 h-5 {{ request()->routeIs('doctor.reports.*') ? 'text-white' : 'text-emerald-500 dark:text-emerald-400' }} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span x-show="!sidebarCollapsed" class="truncate">Reports</span>
                 </a>
 
-                <a href="{{ route('doctor.dashboard') }}" 
-                   title="Surgical Statistics"
+                <a href="{{ route('doctor.analytics') }}" 
+                   title="Analytics"
                    :class="sidebarCollapsed ? 'justify-center px-0' : ''"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white">
-                    <svg class="w-5 h-5 text-purple-500 dark:text-purple-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path></svg>
-                    <span x-show="!sidebarCollapsed" class="truncate">Surgical Statistics</span>
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('doctor.analytics') ? 'bg-purple-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
+                    <svg class="w-5 h-5 {{ request()->routeIs('doctor.analytics') ? 'text-white' : 'text-purple-500 dark:text-purple-400' }} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path></svg>
+                    <span x-show="!sidebarCollapsed" class="truncate">Analytics</span>
                 </a>
 
                 <a href="{{ route('doctor.records.index') }}" 

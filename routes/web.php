@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\ReferenceDataController;
 use App\Http\Controllers\DataEntry\RecordController;
 use App\Http\Controllers\AuditFormController;
 use App\Http\Controllers\Doctor\PatientController;
+use App\Http\Controllers\Doctor\ReportController;
+use App\Http\Controllers\Doctor\AnalyticsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -73,6 +75,22 @@ Route::middleware('auth')->group(function () {
                 Route::get('/audit-form/phn-suggestions', [AuditFormController::class, 'phnSuggestions'])->name('audit-form.phn-suggestions');
                 Route::get('/audit-form/patient-lookup', [AuditFormController::class, 'lookupPatient'])->name('audit-form.patient-lookup');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
+
+            // Reports
+            Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+            Route::get('/reports/case/{surgeryId}', [ReportController::class, 'caseAudit'])->name('reports.case');
+            Route::get('/reports/case/{surgeryId}/pdf', [ReportController::class, 'caseAuditPdf'])->name('reports.case.pdf');
+            Route::get('/reports/patient-history', [ReportController::class, 'patientHistory'])->name('reports.patient-history');
+            Route::get('/reports/patient-history/pdf', [ReportController::class, 'patientHistoryPdf'])->name('reports.patient-history.pdf');
+            Route::get('/reports/difficult-airway', [ReportController::class, 'difficultAirway'])->name('reports.difficult-airway');
+            Route::get('/reports/difficult-airway/pdf', [ReportController::class, 'difficultAirwayPdf'])->name('reports.difficult-airway.pdf');
+            Route::get('/reports/adverse-events', [ReportController::class, 'adverseEvents'])->name('reports.adverse-events');
+            Route::get('/reports/adverse-events/pdf', [ReportController::class, 'adverseEventsPdf'])->name('reports.adverse-events.pdf');
+            Route::get('/reports/my-cases', [ReportController::class, 'myCases'])->name('reports.my-cases');
+            Route::get('/reports/my-cases/pdf', [ReportController::class, 'myCasesPdf'])->name('reports.my-cases.pdf');
+
+            // Analytics Dashboard
+            Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
     });
 
     // --- DATA ENTRY ---
