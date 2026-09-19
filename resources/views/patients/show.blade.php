@@ -106,7 +106,7 @@
                 </div>
 
                 <!-- Medical Conditions Section -->
-                <div class="px-6 py-4 bg-gray-50/50 dark:bg-gray-850 border-t border-gray-100 dark:border-gray-700/60">
+                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900/40 border-t border-gray-200 dark:border-gray-700/80">
                     <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Medical Conditions</p>
                     <div class="flex flex-wrap gap-2 items-center">
                         @forelse($patient->conditions as $cond)
@@ -175,7 +175,7 @@
                                 : ($surgery->created_at ? \Carbon\Carbon::parse($surgery->created_at)->format('d-M-Y') : 'N/A');
                             $anaesthesiaMode = $surgery->anaesthesia ? $surgery->anaesthesia->mode : 'N/A';
                         @endphp
-                        <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-750 transition flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                        <div class="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/40 transition flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                             
                             <!-- Surgery Core Info -->
                             <div class="space-y-2 flex-1">
