@@ -14,7 +14,7 @@ class AnalyticsController extends Controller
 
     public function index(Request $request)
     {
-        $scope    = $request->query('scope', 'my');   // 'my' | 'all'
+        $scope    = $request->query('scope', 'my') === 'all' ? 'all' : 'my';
         $filters  = [
             'date_from' => $request->query('date_from', ''),
             'date_to'   => $request->query('date_to', ''),
