@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ReferenceDataController;
 use App\Http\Controllers\DataEntry\RecordController;
 use App\Http\Controllers\AuditFormController;
 use App\Http\Controllers\Doctor\PatientController;
+use App\Http\Controllers\GlobalSearchController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -65,6 +66,7 @@ Route::middleware('auth')->group(function () {
 
             // Patients Directory & Patient Profile
             Route::get('/patients', [PatientController::class, 'index'])->name('patients.index');
+            Route::get('/patients/suggestions', [PatientController::class, 'suggestions'])->name('patients.suggestions');
             Route::get('/patients/{patient}', [PatientController::class, 'show'])->name('patients.show');
 
             // Access and submit the Anesthesia Audit form
@@ -73,6 +75,7 @@ Route::middleware('auth')->group(function () {
                 Route::get('/audit-form/phn-suggestions', [AuditFormController::class, 'phnSuggestions'])->name('audit-form.phn-suggestions');
                 Route::get('/audit-form/patient-lookup', [AuditFormController::class, 'lookupPatient'])->name('audit-form.patient-lookup');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
+            Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
     });
 
     // --- DATA ENTRY ---
@@ -96,7 +99,11 @@ Route::middleware('auth')->group(function () {
                 Route::get('/audit-form/phn-suggestions', [AuditFormController::class, 'phnSuggestions'])->name('audit-form.phn-suggestions');
                 Route::get('/audit-form/patient-lookup', [AuditFormController::class, 'lookupPatient'])->name('audit-form.patient-lookup');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
+            Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
     });
+
+    // Global Universal Search
+    Route::get('/global-search', [GlobalSearchController::class, 'index'])->name('global-search.index');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
