@@ -81,7 +81,7 @@
                         <tbody class="divide-y divide-slate-100 dark:divide-gray-700">
                             @forelse($surgeries as $surgery)
                             <tr class="hover:bg-amber-50/50 dark:hover:bg-amber-900/10 transition-colors">
-                                <td class="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">{{ date('d M Y', strtotime($surgery->date_of_surgery)) }}</td>
+                                <td class="px-4 py-3 text-slate-500 dark:text-slate-400 font-medium">{{ $surgery->date_of_surgery ? date('d M Y', strtotime($surgery->date_of_surgery)) : 'N/A' }}</td>
                                 <td class="px-4 py-3 font-bold text-slate-800 dark:text-white">
                                     <div>{{ $surgery->patient->name ?? 'N/A' }}</div>
                                     <div class="text-xs text-slate-400 font-normal">PHN: {{ $surgery->patient->phn ?? 'N/A' }}</div>
