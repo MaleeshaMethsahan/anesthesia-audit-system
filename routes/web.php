@@ -99,11 +99,12 @@ Route::middleware('auth')->group(function () {
                 Route::get('/audit-form/phn-suggestions', [AuditFormController::class, 'phnSuggestions'])->name('audit-form.phn-suggestions');
                 Route::get('/audit-form/patient-lookup', [AuditFormController::class, 'lookupPatient'])->name('audit-form.patient-lookup');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
-            Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
     });
 
-    // Global Universal Search
-    Route::get('/global-search', [GlobalSearchController::class, 'index'])->name('global-search.index');
+    // Global Universal Search (Restricted to Doctors only)
+    Route::middleware('role:doctor')
+        ->get('/global-search', [GlobalSearchController::class, 'index'])
+        ->name('global-search.index');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -41,15 +41,49 @@ class GlobalSearchTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 
-    public function test_doctor_and_data_entry_can_access_global_search(): void
+    public function test_only_doctor_can_access_global_search(): void
     {
+        $admin = User::factory()->create([
+            'role' => 'system_admin',
+        ]);
+
         $responseDoctor = $this->actingAs($this->doctor)->get(route('global-search.index'));
         $responseDoctor->assertOk();
         $responseDoctor->assertSee('Global Clinical Audit Search');
 
         $responseDE = $this->actingAs($this->dataEntry)->get(route('global-search.index'));
+        $responseDE->assertForbidden();
+
+        $responseAdmin = $this->actingAs($admin)->get(route('global-search.index'));
+        $responseAdmin->assertForbidden();
+    }
+
+    public function test_global_search_option_is_not_displayed_on_admin_or_data_entry_dashboard(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'system_admin',
+        ]);
+
+        // 1. Admin Dashboard navigation must NOT contain Global Search links or input
+        $responseAdmin = $this->actingAs($admin)->get(route('admin.dashboard'));
+        $responseAdmin->assertOk();
+        $responseAdmin->assertDontSee(route('global-search.index'));
+        $responseAdmin->assertDontSee('Global Search');
+        $responseAdmin->assertDontSee('placeholder="Global search audits..."', false);
+
+        // 2. Data Entry Dashboard navigation must NOT contain Global Search links or input
+        $responseDE = $this->actingAs($this->dataEntry)->get(route('data_entry.dashboard'));
         $responseDE->assertOk();
-        $responseDE->assertSee('Global Clinical Audit Search');
+        $responseDE->assertDontSee(route('global-search.index'));
+        $responseDE->assertDontSee('Global Search');
+        $responseDE->assertDontSee('placeholder="Global search audits..."', false);
+
+        // 3. Doctor Dashboard navigation MUST contain Global Search link and input
+        $responseDoctor = $this->actingAs($this->doctor)->get(route('doctor.dashboard'));
+        $responseDoctor->assertOk();
+        $responseDoctor->assertSee(route('global-search.index'));
+        $responseDoctor->assertSee('Global Search');
+        $responseDoctor->assertSee('placeholder="Global search audits..."', false);
     }
 
     public function test_global_search_by_keyword_matches_operation_phn_and_encrypted_name(): void

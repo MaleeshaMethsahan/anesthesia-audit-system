@@ -59,10 +59,12 @@
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <!-- Global Search Quick Button for Mobile -->
+                        @if(auth()->user()?->role === 'doctor')
+                        {{-- Global Search Quick Button for Mobile (Doctor Only) --}}
                         <a href="{{ route('global-search.index') }}" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition" title="Global Search">
                             <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </a>
+                        @endif
                         <!-- Theme Toggle Button for Mobile -->
                         <button @click="toggleTheme()" type="button" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition">
                             <svg x-show="!darkMode" class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -91,6 +93,7 @@
 
         </div>
 
+        @if(auth()->user()?->role === 'doctor')
         <script>
             document.addEventListener('keydown', function(e) {
                 if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -103,5 +106,6 @@
                 }
             });
         </script>
+        @endif
     </body>
 </html>

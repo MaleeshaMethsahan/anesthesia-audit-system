@@ -77,7 +77,8 @@
             </span>
         </div>
 
-        <!-- Quick Global Search Input in Sidebar -->
+        @if(auth()->user()->role === 'doctor')
+        {{-- Quick Global Search Input in Sidebar (Doctor Only) --}}
         <div class="p-3 border-b border-gray-200 dark:border-slate-800/80">
             <form action="{{ route('global-search.index') }}" method="GET" class="relative">
                 <div x-show="!sidebarCollapsed" class="relative">
@@ -99,6 +100,7 @@
                 </div>
             </form>
         </div>
+        @endif
 
         <!-- Navigation Links Menu -->
         <nav class="p-3 space-y-1.5 overflow-y-auto max-h-[calc(100vh-16rem)]">
@@ -199,13 +201,6 @@
                     <span x-show="!sidebarCollapsed" class="truncate">View Database</span>
                 </a>
 
-                <a href="{{ route('global-search.index') }}" 
-                   title="Global Search"
-                   :class="sidebarCollapsed ? 'justify-center px-0' : ''"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
-                    <svg class="w-5 h-5 {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'text-white' : 'text-indigo-500 dark:text-indigo-400' }} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <span x-show="!sidebarCollapsed" class="truncate">Global Search</span>
-                </a>
 
                 <a href="{{ route('profile.edit') }}" 
                    title="Profile & Settings"
@@ -251,13 +246,6 @@
                     <span x-show="!sidebarCollapsed" class="truncate">View Login Logs</span>
                 </a>
 
-                <a href="{{ route('global-search.index') }}" 
-                   title="Global Search"
-                   :class="sidebarCollapsed ? 'justify-center px-0' : ''"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
-                    <svg class="w-5 h-5 {{ request()->routeIs('global-search.*') || request()->routeIs('*.search') ? 'text-white' : 'text-indigo-500 dark:text-indigo-400' }} flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <span x-show="!sidebarCollapsed" class="truncate">Global Search</span>
-                </a>
 
                 <a href="{{ route('profile.edit') }}" 
                    title="Profile & Settings"
