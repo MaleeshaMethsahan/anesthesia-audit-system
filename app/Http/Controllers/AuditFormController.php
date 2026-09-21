@@ -46,6 +46,13 @@ class AuditFormController extends Controller
             $prefillPatient = Patient::where('phn', $phn)->first();
         }
 
+        // If logged in as doctor, automatically identify / ensure their Staff record exists
+        $defaultAnaesthetistId = null;
+        if (auth()->user()?->role === 'doctor') {
+            $doctorStaff = Staff::firstOrCreate(['name' => auth()->user()->name]);
+            $defaultAnaesthetistId = $doctorStaff->staff_id;
+        }
+
         $medicalSystems = MedicalSystem::with('conditions')->get();
         $staffMembers = Staff::all();
         $adverseEvents = AdverseEvent::all();
@@ -68,7 +75,8 @@ class AuditFormController extends Controller
             'regionalTypes',
             'relaxants',
             'intubationMethods',
-            'prefillPatient'  // null for new, Patient model for returning
+            'prefillPatient',  // null for new, Patient model for returning
+            'defaultAnaesthetistId'
         ));
     }
 
@@ -164,33 +172,40 @@ class AuditFormController extends Controller
 
             $surgeryStaff = [];
 
-if ($request->filled('surgeon_id')) {
-    $surgeryStaff[] = [
-        'surgery_id' => $surgery->surgery_id,
-        'staff_id' => $request->input('surgeon_id'),
-        'role_in_case' => 'Consultant Surgeon',
-    ];
-}
+            if ($request->filled('surgeon_id')) {
+                $surgeryStaff[] = [
+                    'surgery_id'   => $surgery->surgery_id,
+                    'staff_id'     => $request->input('surgeon_id'),
+                    'role_in_case' => 'Consultant Surgeon',
+                ];
+            }
 
-if ($request->filled('anaesthetist_id')) {
-    $surgeryStaff[] = [
-        'surgery_id' => $surgery->surgery_id,
-        'staff_id' => $request->input('anaesthetist_id'),
-        'role_in_case' => 'Consultant Anaesthetist',
-    ];
-}
+            // Identify Consultant Anaesthetist (auto-identify if doctor is logged in)
+            $anaesthetistId = $request->input('anaesthetist_id');
+            if (empty($anaesthetistId) && auth()->user()?->role === 'doctor') {
+                $doctorStaff = Staff::firstOrCreate(['name' => auth()->user()->name]);
+                $anaesthetistId = $doctorStaff->staff_id;
+            }
 
-if ($request->filled('moa_id')) {
-    $surgeryStaff[] = [
-        'surgery_id' => $surgery->surgery_id,
-        'staff_id' => $request->input('moa_id'),
-        'role_in_case' => 'MOA',
-    ];
-}
+            if (!empty($anaesthetistId)) {
+                $surgeryStaff[] = [
+                    'surgery_id'   => $surgery->surgery_id,
+                    'staff_id'     => $anaesthetistId,
+                    'role_in_case' => 'Consultant Anaesthetist',
+                ];
+            }
 
-if (!empty($surgeryStaff)) {
-    DB::table('surgery_staff')->insert($surgeryStaff);
-}
+            if ($request->filled('moa_id')) {
+                $surgeryStaff[] = [
+                    'surgery_id'   => $surgery->surgery_id,
+                    'staff_id'     => $request->input('moa_id'),
+                    'role_in_case' => 'MOA',
+                ];
+            }
+
+            if (!empty($surgeryStaff)) {
+                DB::table('surgery_staff')->insert($surgeryStaff);
+            }
             if ($request->has('surgery_adverse_events')) {
                 $surgery->adverseEvents()->attach($request->input('surgery_adverse_events'));
             }

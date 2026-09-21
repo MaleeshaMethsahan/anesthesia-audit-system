@@ -21,6 +21,9 @@
                     
                     <!-- BUTTONS -->
                     <div class="flex flex-wrap gap-3">
+                        <a href="{{ route('admin.users.index') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 shadow-sm">
+                            👥 Manage Users
+                        </a>
                         <a href="{{ route('admin.users.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
                             + Register New User
                         </a>

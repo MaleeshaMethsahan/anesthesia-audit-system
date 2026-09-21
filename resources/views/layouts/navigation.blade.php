@@ -230,12 +230,12 @@
                     <span x-show="!sidebarCollapsed" class="truncate">Manage Master Data</span>
                 </a>
 
-                <a href="{{ route('admin.users.create') }}" 
-                   title="Register User"
+                <a href="{{ route('admin.users.index') }}" 
+                   title="User Management"
                    :class="sidebarCollapsed ? 'justify-center px-0' : ''"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.users.*') ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
-                    <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
-                    <span x-show="!sidebarCollapsed" class="truncate">Register User</span>
+                    <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <span x-show="!sidebarCollapsed" class="truncate">User Management</span>
                 </a>
 
                 <a href="{{ route('admin.logs.index') }}" 
