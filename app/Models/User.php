@@ -13,6 +13,27 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * Maximum allowed system administrator accounts.
+     */
+    public const MAX_ADMINS = 2;
+
+    /**
+     * Get the count of existing system admin users.
+     */
+    public static function adminCount(): int
+    {
+        return static::where('role', 'system_admin')->count();
+    }
+
+    /**
+     * Check if a new system admin can be created.
+     */
+    public static function canCreateAdmin(): bool
+    {
+        return static::adminCount() < self::MAX_ADMINS;
+    }
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

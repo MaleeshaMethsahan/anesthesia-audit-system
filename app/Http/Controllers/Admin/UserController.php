@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -35,8 +36,10 @@ class UserController extends Controller
         }
 
         $users = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+        $adminCount = User::adminCount();
+        $maxAdmins = User::MAX_ADMINS;
 
-        return view('admin.users.index', compact('users', 'search', 'roleFilter'));
+        return view('admin.users.index', compact('users', 'search', 'roleFilter', 'adminCount', 'maxAdmins'));
     }
 
     /**
@@ -44,7 +47,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        $canCreateAdmin = User::canCreateAdmin();
+        $adminCount = User::adminCount();
+        $maxAdmins = User::MAX_ADMINS;
+
+        return view('admin.users.create', compact('canCreateAdmin', 'adminCount', 'maxAdmins'));
     }
 
     /**
@@ -59,6 +66,13 @@ class UserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role'     => ['required', 'in:system_admin,doctor,data_entry'],
         ]);
+
+        // Enforce maximum 2 system admin accounts
+        if ($request->role === 'system_admin' && !User::canCreateAdmin()) {
+            throw ValidationException::withMessages([
+                'role' => ['The maximum limit of ' . User::MAX_ADMINS . ' System Administrator accounts has been reached.'],
+            ]);
+        }
 
         DB::transaction(function () use ($request) {
             // 2. Create User
@@ -86,7 +100,11 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        $canCreateAdmin = User::canCreateAdmin();
+        $adminCount = User::adminCount();
+        $maxAdmins = User::MAX_ADMINS;
+
+        return view('admin.users.edit', compact('user', 'canCreateAdmin', 'adminCount', 'maxAdmins'));
     }
 
     /**
@@ -100,6 +118,13 @@ class UserController extends Controller
             'role'     => ['required', 'in:system_admin,doctor,data_entry'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
         ]);
+
+        // Enforce maximum 2 system admin accounts if changing role to system_admin
+        if ($validated['role'] === 'system_admin' && $user->role !== 'system_admin' && !User::canCreateAdmin()) {
+            throw ValidationException::withMessages([
+                'role' => ['The maximum limit of ' . User::MAX_ADMINS . ' System Administrator accounts has been reached.'],
+            ]);
+        }
 
         DB::transaction(function () use ($validated, $user) {
             $user->name  = $validated['name'];

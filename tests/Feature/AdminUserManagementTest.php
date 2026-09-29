@@ -23,11 +23,15 @@ class AdminUserManagementTest extends TestCase
     {
         parent::setUp();
 
-        $this->admin = User::factory()->create([
-            'name' => 'Super Administrator',
-            'email' => 'admin@hospital.test',
-            'role' => 'system_admin',
-        ]);
+        $this->admin = User::firstOrCreate(
+            ['email' => 'admin@hospital.test'],
+            [
+                'name' => 'Super Administrator',
+                'password' => Hash::make('password'),
+                'role' => 'system_admin',
+            ]
+        );
+        User::where('role', 'system_admin')->where('id', '!=', $this->admin->id)->delete();
 
         $this->doctor = User::factory()->create([
             'name' => 'Dr. Alexander Fleming',
@@ -333,4 +337,96 @@ class AdminUserManagementTest extends TestCase
         $this->assertNotNull($anaesthetistStaff);
         $this->assertEquals('Dr. Jonas Salk', $anaesthetistStaff->name);
     }
+
+    public function test_admin_cannot_create_third_system_admin_when_limit_of_two_reached(): void
+    {
+        // 1. One admin already exists ($this->admin). Create the second admin.
+        User::factory()->create([
+            'name' => 'Second Admin',
+            'email' => 'admin2@hospital.test',
+            'role' => 'system_admin',
+        ]);
+
+        $this->assertEquals(2, User::where('role', 'system_admin')->count());
+        $this->assertFalse(User::canCreateAdmin());
+
+        // 2. Attempt to create a third admin via admin.users.store
+        $response = $this->actingAs($this->admin)->post(route('admin.users.store'), [
+            'name' => 'Third Admin',
+            'email' => 'admin3@hospital.test',
+            'password' => 'AdminPass123!',
+            'password_confirmation' => 'AdminPass123!',
+            'role' => 'system_admin',
+        ]);
+
+        $response->assertSessionHasErrors(['role']);
+        $this->assertEquals(2, User::where('role', 'system_admin')->count());
+        $this->assertDatabaseMissing('users', ['email' => 'admin3@hospital.test']);
+    }
+
+    public function test_admin_cannot_promote_user_to_system_admin_when_limit_reached(): void
+    {
+        // Second admin
+        User::factory()->create([
+            'name' => 'Second Admin',
+            'email' => 'admin2@hospital.test',
+            'role' => 'system_admin',
+        ]);
+
+        // Attempt to update dataEntry user to system_admin
+        $response = $this->actingAs($this->admin)->put(route('admin.users.update', $this->dataEntry), [
+            'name' => $this->dataEntry->name,
+            'email' => $this->dataEntry->email,
+            'role' => 'system_admin',
+        ]);
+
+        $response->assertSessionHasErrors(['role']);
+        $this->dataEntry->refresh();
+        $this->assertEquals('data_entry', $this->dataEntry->role);
+    }
+
+    public function test_existing_system_admin_can_update_their_details_without_triggering_limit(): void
+    {
+        // Second admin
+        $secondAdmin = User::factory()->create([
+            'name' => 'Second Admin',
+            'email' => 'admin2@hospital.test',
+            'role' => 'system_admin',
+        ]);
+
+        // Updating second admin's email and keeping role system_admin must succeed
+        $response = $this->actingAs($this->admin)->put(route('admin.users.update', $secondAdmin), [
+            'name' => 'Second Admin Updated',
+            'email' => 'admin2_updated@hospital.test',
+            'role' => 'system_admin',
+        ]);
+
+        $response->assertRedirect(route('admin.users.index'));
+        $secondAdmin->refresh();
+        $this->assertEquals('Second Admin Updated', $secondAdmin->name);
+        $this->assertEquals('admin2_updated@hospital.test', $secondAdmin->email);
+        $this->assertEquals('system_admin', $secondAdmin->role);
+    }
+
+    public function test_public_registration_cannot_register_third_system_admin(): void
+    {
+        // Second admin
+        User::factory()->create([
+            'name' => 'Second Admin',
+            'email' => 'admin2@hospital.test',
+            'role' => 'system_admin',
+        ]);
+
+        $response = $this->post(route('register'), [
+            'name' => 'Rogue Admin',
+            'email' => 'rogue@hospital.test',
+            'password' => 'RoguePass123!',
+            'password_confirmation' => 'RoguePass123!',
+            'role' => 'system_admin',
+        ]);
+
+        $response->assertSessionHasErrors(['role']);
+        $this->assertDatabaseMissing('users', ['email' => 'rogue@hospital.test']);
+    }
 }
+

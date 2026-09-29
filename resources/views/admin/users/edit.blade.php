@@ -61,9 +61,18 @@
                                     class="block mt-1.5 w-full border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm text-sm">
                                 <option value="doctor" {{ old('role', $user->role) === 'doctor' ? 'selected' : '' }}>Doctor (Clinical Access & Audit Logging)</option>
                                 <option value="data_entry" {{ old('role', $user->role) === 'data_entry' ? 'selected' : '' }}>Data Entry (Audit Records Data Entry)</option>
-                                <option value="system_admin" {{ old('role', $user->role) === 'system_admin' ? 'selected' : '' }}>System Admin (System Administration)</option>
+                                @if($user->role === 'system_admin' || ($canCreateAdmin ?? \App\Models\User::canCreateAdmin()))
+                                    <option value="system_admin" {{ old('role', $user->role) === 'system_admin' ? 'selected' : '' }}>System Admin (System Administration)</option>
+                                @else
+                                    <option value="system_admin" disabled class="text-slate-400 dark:text-slate-500">System Admin (Maximum limit of 2 reached)</option>
+                                @endif
                             </select>
                             <x-input-error :messages="$errors->get('role')" class="mt-2" />
+                            @if($user->role !== 'system_admin' && !($canCreateAdmin ?? \App\Models\User::canCreateAdmin()))
+                                <p class="text-xs text-amber-600 dark:text-amber-400 mt-1.5 font-medium">
+                                    System Administrator limit reached (maximum 2 accounts allowed).
+                                </p>
+                            @endif
                         </div>
 
                         <div class="border-t border-slate-200 dark:border-slate-700/80 pt-6">
