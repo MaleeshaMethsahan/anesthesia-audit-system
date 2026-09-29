@@ -13,6 +13,7 @@ use App\Http\Controllers\DataEntry\RecordController;
 use App\Http\Controllers\AuditFormController;
 use App\Http\Controllers\Doctor\PatientController;
 use App\Http\Controllers\GlobalSearchController;
+use App\Http\Controllers\Doctor\SurgicalStatisticsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -93,6 +94,9 @@ Route::middleware('auth')->group(function () {
                 Route::get('/audit-form/patient-lookup', [AuditFormController::class, 'lookupPatient'])->name('audit-form.patient-lookup');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
             Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
+
+            // Surgical Statistics & Trend Analysis
+            Route::get('/surgical-statistics', [SurgicalStatisticsController::class, 'index'])->name('surgical-statistics.index');
     });
 
     // --- DATA ENTRY ---
