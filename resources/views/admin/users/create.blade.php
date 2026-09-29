@@ -1,66 +1,108 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Register New User') }}
-        </h2>
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="font-extrabold text-2xl text-slate-800 dark:text-white leading-tight">
+                    {{ __('Register New User') }}
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Create a new system account with designated role access.
+                </p>
+            </div>
+            <a href="{{ route('admin.users.index') }}" 
+               class="inline-flex items-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-sky-500/20 transition">
+                ← Back to Users
+            </a>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+    <div class="py-8 bg-slate-50 dark:bg-slate-900 min-h-screen">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700/80 overflow-hidden">
+                <div class="p-6 sm:p-8">
                     
-                    <form method="POST" action="{{ route('admin.users.store') }}">
+                    <form method="POST" action="{{ route('admin.users.store') }}" class="space-y-6">
                         @csrf
 
                         <!-- Name -->
                         <div>
-                            <x-input-label for="name" :value="__('Name')" />
-                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                            <x-input-label for="name" :value="__('Name')" class="font-bold text-slate-700 dark:text-slate-300" />
+                            <x-text-input id="name" 
+                                          class="block mt-1.5 w-full rounded-xl dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100" 
+                                          type="text" 
+                                          name="name" 
+                                          :value="old('name')" 
+                                          required autofocus autocomplete="name" />
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
 
                         <!-- Email Address -->
-                        <div class="mt-4">
-                            <x-input-label for="email" :value="__('Email')" />
-                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+                        <div>
+                            <x-input-label for="email" :value="__('Email Address')" class="font-bold text-slate-700 dark:text-slate-300" />
+                            <x-text-input id="email" 
+                                          class="block mt-1.5 w-full rounded-xl dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100" 
+                                          type="email" 
+                                          name="email" 
+                                          :value="old('email')" 
+                                          required autocomplete="username" />
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
 
                         <!-- Role Selection -->
-                        <div class="mt-4">
-                            <x-input-label for="role" :value="__('Role')" />
-                            <select id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                <option value="doctor">Doctor</option>
-                                <option value="data_entry">Data Entry</option>
-                                <option value="system_admin">System Admin</option>
+                        <div>
+                            <x-input-label for="role" :value="__('Role')" class="font-bold text-slate-700 dark:text-slate-300" />
+                            <select id="role" 
+                                    name="role" 
+                                    class="block mt-1.5 w-full border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm text-sm">
+                                <option value="doctor" {{ old('role') === 'doctor' ? 'selected' : '' }}>Doctor (Clinical Access & Audit Logging)</option>
+                                <option value="data_entry" {{ old('role') === 'data_entry' ? 'selected' : '' }}>Data Entry (Audit Records Data Entry)</option>
+                                @if($canCreateAdmin ?? \App\Models\User::canCreateAdmin())
+                                    <option value="system_admin" {{ old('role') === 'system_admin' ? 'selected' : '' }}>System Admin (System Administration)</option>
+                                @else
+                                    <option value="system_admin" disabled class="text-slate-400 dark:text-slate-500">System Admin (Maximum limit of 2 reached)</option>
+                                @endif
                             </select>
                             <x-input-error :messages="$errors->get('role')" class="mt-2" />
+                            @if(!($canCreateAdmin ?? \App\Models\User::canCreateAdmin()))
+                                <p class="text-xs text-amber-600 dark:text-amber-400 mt-1.5 font-medium">
+                                    System Administrator limit reached (maximum 2 accounts allowed).
+                                </p>
+                            @endif
                         </div>
 
                         <!-- Password -->
-                        <div class="mt-4">
-                            <x-input-label for="password" :value="__('Password')" />
-                            <x-text-input id="password" class="block mt-1 w-full"
-                                            type="password"
-                                            name="password"
-                                            required autocomplete="new-password" />
+                        <div>
+                            <x-input-label for="password" :value="__('Password')" class="font-bold text-slate-700 dark:text-slate-300" />
+                            <x-text-input id="password" 
+                                          class="block mt-1.5 w-full rounded-xl dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100"
+                                          type="password"
+                                          name="password"
+                                          required autocomplete="new-password" />
                             <x-input-error :messages="$errors->get('password')" class="mt-2" />
                         </div>
 
                         <!-- Confirm Password -->
-                        <div class="mt-4">
-                            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-                            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                            type="password"
-                                            name="password_confirmation" required autocomplete="new-password" />
+                        <div>
+                            <x-input-label for="password_confirmation" :value="__('Confirm Password')" class="font-bold text-slate-700 dark:text-slate-300" />
+                            <x-text-input id="password_confirmation" 
+                                          class="block mt-1.5 w-full rounded-xl dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100"
+                                          type="password"
+                                          name="password_confirmation" 
+                                          required autocomplete="new-password" />
                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                         </div>
 
-                        <div class="flex items-center justify-end mt-4">
-                            <x-primary-button class="ms-4">
+                        <!-- Submit Buttons -->
+                        <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-200 dark:border-slate-700/80">
+                            <a href="{{ route('admin.users.index') }}" 
+                               class="px-5 py-2.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold transition">
+                                Cancel
+                            </a>
+                            <button type="submit" 
+                                    class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-md hover:shadow-indigo-500/20 transition">
                                 {{ __('Register User') }}
-                            </x-primary-button>
+                            </button>
                         </div>
                     </form>
 

@@ -19,10 +19,14 @@
         <!-- Role -->
         <div class="mt-4">
             <x-input-label for="role" :value="__('Register as')" />
-            <select id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+            <select id="role" name="role" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                 <option value="doctor">Doctor</option>
                 <option value="data_entry">Data Entry</option>
-                <option value="system_admin">System Admin</option>
+                @if($canCreateAdmin ?? \App\Models\User::canCreateAdmin())
+                    <option value="system_admin">System Admin</option>
+                @else
+                    <option value="system_admin" disabled class="text-gray-400">System Admin (Limit of 2 reached)</option>
+                @endif
             </select>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>

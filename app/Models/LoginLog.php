@@ -17,6 +17,10 @@ class LoginLog extends Model
         'login_at',
     ];
 
+    protected $casts = [
+        'login_at' => 'datetime',
+    ];
+
     // Relationship: A log belongs to a User
     public function user(): BelongsTo
     {

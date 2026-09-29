@@ -8,6 +8,7 @@ use App\Http\Controllers\DataEntry\DashboardController as DataEntryDashboard;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Admin\ReferenceDataController;
+use App\Http\Controllers\Admin\AuditFormSettingController;
 use App\Http\Controllers\DataEntry\RecordController;
 use App\Http\Controllers\AuditFormController;
 use App\Http\Controllers\Doctor\PatientController;
@@ -36,17 +37,33 @@ Route::middleware('auth')->group(function () {
         ->prefix('admin')
         ->name('admin.')
         ->group(function () {
-            // Uses Admin/DashboardController
             Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
+            
+            // User Management (CRUD)
+            Route::get('/users', [UserController::class, 'index'])->name('users.index');
             Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
             Route::post('/users', [UserController::class, 'store'])->name('users.store');
+            Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+            Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+            Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
             Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
             
-            // Reference Data Management (CRUD)
+            // Reference Data Management (CRUD) - part of Audit Form Settings
             Route::get('/reference-data', [ReferenceDataController::class, 'index'])->name('reference-data.index');
             Route::post('/reference-data/{type}', [ReferenceDataController::class, 'store'])->name('reference-data.store');
             Route::put('/reference-data/{type}/{id}', [ReferenceDataController::class, 'update'])->name('reference-data.update');
             Route::delete('/reference-data/{type}/{id}', [ReferenceDataController::class, 'destroy'])->name('reference-data.destroy');
+
+            // Audit Form Settings (Doctors in form, Master data, form configuration)
+            Route::prefix('audit-form-settings')->name('audit-form-settings.')->group(function () {
+                Route::get('/', [AuditFormSettingController::class, 'index'])->name('index');
+                Route::get('/doctors', [AuditFormSettingController::class, 'doctors'])->name('doctors');
+                Route::post('/doctors', [AuditFormSettingController::class, 'storeDoctor'])->name('doctors.store');
+                Route::patch('/doctors/{staff}/toggle', [AuditFormSettingController::class, 'toggleDoctor'])->name('doctors.toggle');
+                Route::put('/doctors/{staff}', [AuditFormSettingController::class, 'updateDoctor'])->name('doctors.update');
+                Route::delete('/doctors/{staff}', [AuditFormSettingController::class, 'destroyDoctor'])->name('doctors.destroy');
+            });
     });
 
     // --- DOCTOR ---
@@ -99,11 +116,12 @@ Route::middleware('auth')->group(function () {
                 Route::get('/audit-form/phn-suggestions', [AuditFormController::class, 'phnSuggestions'])->name('audit-form.phn-suggestions');
                 Route::get('/audit-form/patient-lookup', [AuditFormController::class, 'lookupPatient'])->name('audit-form.patient-lookup');
             Route::post('/audit-form', [AuditFormController::class, 'store'])->name('audit-form.store');
-            Route::get('/search', [GlobalSearchController::class, 'index'])->name('search');
     });
 
-    // Global Universal Search
-    Route::get('/global-search', [GlobalSearchController::class, 'index'])->name('global-search.index');
+    // Global Universal Search (Restricted to Doctors only)
+    Route::middleware('role:doctor')
+        ->get('/global-search', [GlobalSearchController::class, 'index'])
+        ->name('global-search.index');
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

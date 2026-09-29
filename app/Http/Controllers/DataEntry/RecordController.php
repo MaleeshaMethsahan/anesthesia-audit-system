@@ -105,7 +105,13 @@ class RecordController extends Controller
 
         // Master lists
         $medicalSystems = \App\Models\MedicalSystem::with('conditions')->get();
-        $staffMembers = \App\Models\Staff::all();
+        $existingStaffIds = array_filter([$surgeonId, $anaesthetistId, $moaId]);
+        $staffMembers = \App\Models\Staff::where('is_active', true)
+            ->when(!empty($existingStaffIds), function ($query) use ($existingStaffIds) {
+                $query->orWhereIn('staff_id', $existingStaffIds);
+            })
+            ->orderBy('name')
+            ->get();
         $adverseEvents = \App\Models\AdverseEvent::all();
         $analgesics = \App\Models\Analgesic::all();
         $inductionAgents = \App\Models\InductionAgent::all();

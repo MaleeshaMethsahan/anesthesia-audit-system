@@ -11,9 +11,10 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <a href="{{ route('doctor.audit-form.create') }}" class="bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 px-4 rounded shadow transition inline-flex items-center gap-1.5">
+                <a href="{{ route('doctor.audit-form.create') }}" 
+                   class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-emerald-500/20 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    <span>+ ADD NEW RECORD</span>
+                    <span>+ Add New Record</span>
                 </a>
             </div>
         </div>

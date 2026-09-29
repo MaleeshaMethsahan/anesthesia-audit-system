@@ -184,15 +184,18 @@
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name
-                                        of Con. Anaesthetist</label>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name of Con. Anaesthetist</label>
+                                        @if(auth()->user()?->role === 'doctor')
+                                            <span class="text-[0.7rem] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded-full">Auto-identified</span>
+                                        @endif
+                                    </div>
                                     <select name="anaesthetist_id"
                                         class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                         <option value="">Select Anaesthetist</option>
                                         @foreach($staffMembers as $staff)
-                                        <option value="{{ $staff->staff_id }}" {{ old('anaesthetist_id')==$staff->
-                                            staff_id ? 'selected' : '' }}>
-                                            {{ $staff->name }}
+                                        <option value="{{ $staff->staff_id }}" {{ old('anaesthetist_id', $defaultAnaesthetistId ?? (auth()->user()?->role === 'doctor' ? $staffMembers->firstWhere('name', auth()->user()->name)?->staff_id : null)) == $staff->staff_id ? 'selected' : '' }}>
+                                            {{ $staff->name }} @if(auth()->user()?->role === 'doctor' && $staff->name === auth()->user()->name) (You) @endif
                                         </option>
                                         @endforeach
                                     </select>

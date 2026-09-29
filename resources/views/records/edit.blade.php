@@ -34,8 +34,10 @@
                     @endif
                 </div>
             </div>
-            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.records.index') : route('data_entry.records.index') }}" class="self-start md:self-auto bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded shadow transition text-sm flex-shrink-0">
-                &larr; Back to Database
+            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.records.index') : route('data_entry.records.index') }}" 
+               class="inline-flex items-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-sky-500/20 transition flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Database
             </a>
         </div>
     </x-slot>

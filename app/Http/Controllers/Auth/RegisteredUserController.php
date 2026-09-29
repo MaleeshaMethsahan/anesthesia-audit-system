@@ -21,7 +21,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $canCreateAdmin = User::canCreateAdmin();
+        return view('auth.register', compact('canCreateAdmin'));
     }
 
     /**
@@ -38,6 +39,12 @@ class RegisteredUserController extends Controller
             // Validate the role
             'role' => ['required', 'in:system_admin,doctor,data_entry'], 
         ]);
+
+        if ($request->role === 'system_admin' && !User::canCreateAdmin()) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'role' => ['The maximum limit of ' . User::MAX_ADMINS . ' System Administrator accounts has been reached.'],
+            ]);
+        }
 
         $user = DB::transaction(function () use ($request) {
             $user = User::create([

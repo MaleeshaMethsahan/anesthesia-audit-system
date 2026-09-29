@@ -16,7 +16,37 @@ class Staff extends Model
 
     protected $fillable = [
         'name',
+        'is_active',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
+
+    /**
+     * Scope to only staff members that appear in the audit form.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Synchronize all registered doctor users into the staff roster.
+     */
+    public static function syncFromDoctorUsers(): void
+    {
+        $doctors = User::where('role', 'doctor')->get();
+        foreach ($doctors as $doctor) {
+            static::firstOrCreate(
+                ['name' => $doctor->name],
+                ['is_active' => true]
+            );
+        }
+    }
 
     public function surgeries(): BelongsToMany
     {
