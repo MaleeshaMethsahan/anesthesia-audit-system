@@ -8,6 +8,7 @@ use App\Http\Controllers\DataEntry\DashboardController as DataEntryDashboard;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LogController;
 use App\Http\Controllers\Admin\ReferenceDataController;
+use App\Http\Controllers\Admin\AuditFormSettingController;
 use App\Http\Controllers\DataEntry\RecordController;
 use App\Http\Controllers\AuditFormController;
 use App\Http\Controllers\Doctor\PatientController;
@@ -48,11 +49,21 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
             
-            // Reference Data Management (CRUD)
+            // Reference Data Management (CRUD) - part of Audit Form Settings
             Route::get('/reference-data', [ReferenceDataController::class, 'index'])->name('reference-data.index');
             Route::post('/reference-data/{type}', [ReferenceDataController::class, 'store'])->name('reference-data.store');
             Route::put('/reference-data/{type}/{id}', [ReferenceDataController::class, 'update'])->name('reference-data.update');
             Route::delete('/reference-data/{type}/{id}', [ReferenceDataController::class, 'destroy'])->name('reference-data.destroy');
+
+            // Audit Form Settings (Doctors in form, Master data, form configuration)
+            Route::prefix('audit-form-settings')->name('audit-form-settings.')->group(function () {
+                Route::get('/', [AuditFormSettingController::class, 'index'])->name('index');
+                Route::get('/doctors', [AuditFormSettingController::class, 'doctors'])->name('doctors');
+                Route::post('/doctors', [AuditFormSettingController::class, 'storeDoctor'])->name('doctors.store');
+                Route::patch('/doctors/{staff}/toggle', [AuditFormSettingController::class, 'toggleDoctor'])->name('doctors.toggle');
+                Route::put('/doctors/{staff}', [AuditFormSettingController::class, 'updateDoctor'])->name('doctors.update');
+                Route::delete('/doctors/{staff}', [AuditFormSettingController::class, 'destroyDoctor'])->name('doctors.destroy');
+            });
     });
 
     // --- DOCTOR ---

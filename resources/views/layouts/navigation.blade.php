@@ -222,14 +222,6 @@
                     <span x-show="!sidebarCollapsed" class="truncate">Admin Dashboard</span>
                 </a>
 
-                <a href="{{ route('admin.reference-data.index') }}" 
-                   title="Manage Master Data"
-                   :class="sidebarCollapsed ? 'justify-center px-0' : ''"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('admin.reference-data.*') ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
-                    <svg class="w-5 h-5 text-indigo-500 dark:text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    <span x-show="!sidebarCollapsed" class="truncate">Manage Master Data</span>
-                </a>
-
                 <a href="{{ route('admin.users.index') }}" 
                    title="User Management"
                    :class="sidebarCollapsed ? 'justify-center px-0' : ''"
@@ -246,6 +238,15 @@
                     <span x-show="!sidebarCollapsed" class="truncate">View Login Logs</span>
                 </a>
 
+                <a href="{{ route('admin.audit-form-settings.index') }}" 
+                   title="Audit Form Settings"
+                   :class="sidebarCollapsed ? 'justify-center px-0' : ''"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ (request()->routeIs('admin.audit-form-settings.*') || request()->routeIs('admin.reference-data.*')) ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
+                    <svg class="w-5 h-5 text-indigo-500 dark:text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                    </svg>
+                    <span x-show="!sidebarCollapsed" class="truncate">Audit Form Settings</span>
+                </a>
 
                 <a href="{{ route('profile.edit') }}" 
                    title="Profile & Settings"

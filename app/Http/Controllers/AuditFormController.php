@@ -49,12 +49,15 @@ class AuditFormController extends Controller
         // If logged in as doctor, automatically identify / ensure their Staff record exists
         $defaultAnaesthetistId = null;
         if (auth()->user()?->role === 'doctor') {
-            $doctorStaff = Staff::firstOrCreate(['name' => auth()->user()->name]);
+            $doctorStaff = Staff::firstOrCreate(['name' => auth()->user()->name], ['is_active' => true]);
             $defaultAnaesthetistId = $doctorStaff->staff_id;
         }
 
         $medicalSystems = MedicalSystem::with('conditions')->get();
-        $staffMembers = Staff::all();
+        $staffMembers = Staff::active()->orderBy('name')->get();
+        if (isset($doctorStaff) && !$staffMembers->contains('staff_id', $doctorStaff->staff_id)) {
+            $staffMembers->prepend($doctorStaff);
+        }
         $adverseEvents = AdverseEvent::all();
         $analgesics = Analgesic::all();
         $inductionAgents = InductionAgent::all();

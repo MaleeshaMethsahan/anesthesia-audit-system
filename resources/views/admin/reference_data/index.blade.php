@@ -1,12 +1,27 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-bold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Clinical Master Data Management') }}
-            </h2>
-            <a href="{{ route('admin.dashboard') }}" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md text-sm font-semibold shadow-sm transition">
-                &larr; Back to Admin Dashboard
-            </a>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <div class="flex items-center gap-3">
+                    <h2 class="font-extrabold text-2xl text-slate-800 dark:text-white leading-tight">
+                        {{ __('Clinical Master Data Management') }}
+                    </h2>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                        Audit Form Settings
+                    </span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Manage reference parameters, medical conditions, and anesthesia agents used in the audit forms.
+                </p>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.audit-form-settings.doctors') }}" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+                    Doctors in Form
+                </a>
+                <a href="{{ route('admin.audit-form-settings.index') }}" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold transition">
+                    ← Form Settings
+                </a>
+            </div>
         </div>
     </x-slot>
 
