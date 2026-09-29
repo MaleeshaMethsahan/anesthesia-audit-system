@@ -14,12 +14,16 @@
                     Manage reference parameters, medical conditions, and anesthesia agents used in the audit forms.
                 </p>
             </div>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('admin.audit-form-settings.doctors') }}" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-xs font-bold shadow-sm transition">
+            <div class="flex items-center gap-3">
+                <a href="{{ route('admin.audit-form-settings.doctors') }}" 
+                   class="inline-flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-cyan-500/20 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     Doctors in Form
                 </a>
-                <a href="{{ route('admin.audit-form-settings.index') }}" class="px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold transition">
-                    ← Form Settings
+                <a href="{{ route('admin.audit-form-settings.index') }}" 
+                   class="inline-flex items-center gap-2 px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-sky-500/20 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Form Settings
                 </a>
             </div>
         </div>

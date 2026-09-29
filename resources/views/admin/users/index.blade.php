@@ -2,15 +2,9 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-                <div class="flex items-center gap-3">
-                    <h2 class="font-extrabold text-2xl text-slate-800 dark:text-white leading-tight">
-                        {{ __('User Management') }}
-                    </h2>
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border {{ ($adminCount ?? \App\Models\User::adminCount()) >= 2 ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600' }}">
-                        <span class="w-1.5 h-1.5 rounded-full {{ ($adminCount ?? \App\Models\User::adminCount()) >= 2 ? 'bg-amber-500' : 'bg-emerald-500' }}"></span>
-                        Admins: {{ $adminCount ?? \App\Models\User::adminCount() }}/{{ \App\Models\User::MAX_ADMINS }}
-                    </span>
-                </div>
+                <h2 class="font-extrabold text-2xl text-slate-800 dark:text-white leading-tight">
+                    {{ __('User Management') }}
+                </h2>
                 <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                     Manage system accounts, assign roles, update credentials, and maintain user access.
                 </p>

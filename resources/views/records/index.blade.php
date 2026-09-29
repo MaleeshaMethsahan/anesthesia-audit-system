@@ -5,8 +5,10 @@
                 Anaesthesia Audit Database
             </h2>
             <!-- Dynamically route the "ADD NEW RECORD" button based on the logged-in user's role (doctor vs data_entry) -->
-            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.audit-form.start') : route('data_entry.audit-form.start') }}" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow transition">
-                + ADD NEW RECORD
+            <a href="{{ auth()->user()->role === 'doctor' ? route('doctor.audit-form.start') : route('data_entry.audit-form.start') }}" 
+               class="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-emerald-500/20 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                + Add New Record
             </a>
         </div>
     </x-slot>
