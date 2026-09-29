@@ -166,11 +166,11 @@
                 </a>
 
                 <a href="{{ route('profile.edit') }}" 
-                   title="System Settings"
+                   title="Profile & Settings"
                    :class="sidebarCollapsed ? 'justify-center px-0' : ''"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition {{ request()->routeIs('profile.edit') ? 'bg-gray-200 dark:bg-slate-800 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white' }}">
                     <svg class="w-5 h-5 text-teal-500 dark:text-teal-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
-                    <span x-show="!sidebarCollapsed" class="truncate">System Settings</span>
+                    <span x-show="!sidebarCollapsed" class="truncate">Profile & Settings</span>
                 </a>
 
             @elseif(auth()->user()->role === 'data_entry')
@@ -275,9 +275,14 @@
              class="absolute bottom-full left-2 mb-2 w-56 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50 p-2"
              style="display: none;">
             
-            <div class="px-3 py-2 border-b border-gray-200 dark:border-slate-700/60 mb-1">
-                <div class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ Auth::user()->name }}</div>
-                <div class="text-[0.7rem] text-gray-500 dark:text-slate-400 truncate">{{ Auth::user()->email }}</div>
+            <div class="px-3 py-2.5 border-b border-gray-200 dark:border-slate-700/60 mb-1 flex items-center justify-between gap-2.5">
+                <div class="overflow-hidden">
+                    <div class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ Auth::user()->name }}</div>
+                    <div class="text-[0.7rem] text-gray-500 dark:text-slate-400 truncate">{{ Auth::user()->email }}</div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-sm flex-shrink-0">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                </div>
             </div>
 
             <!-- Theme Toggle Option inside Popover -->
@@ -310,19 +315,14 @@
                     type="button" 
                     :title="Auth::user()->name + ' (' + Auth::user()->email + ')'"
                     :class="sidebarCollapsed ? 'justify-center p-1' : 'justify-between p-1.5'"
-                    class="w-full flex items-center rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800 transition text-left group">
-                <div class="flex items-center gap-3 overflow-hidden">
-                    <div class="w-9 h-9 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0 group-hover:bg-indigo-500 transition">
-                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                    </div>
-                    <div x-show="!sidebarCollapsed" class="truncate">
-                        <div class="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition">{{ Auth::user()->name }}</div>
-                        <div class="text-xs text-gray-500 dark:text-slate-400 truncate">{{ Auth::user()->email }}</div>
-                    </div>
+                    class="w-full flex items-center gap-2.5 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-800 transition text-left group">
+                <div x-show="!sidebarCollapsed" class="truncate flex-1 min-w-0">
+                    <div class="text-sm font-bold text-gray-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition">{{ Auth::user()->name }}</div>
+                    <div class="text-xs text-gray-500 dark:text-slate-400 truncate">{{ Auth::user()->email }}</div>
                 </div>
 
-                <div x-show="!sidebarCollapsed" class="p-1.5 text-gray-400 dark:text-slate-400 group-hover:text-gray-900 dark:group-hover:text-white transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                <div class="w-9 h-9 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0 group-hover:bg-indigo-500 transition">
+                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                 </div>
             </button>
 
