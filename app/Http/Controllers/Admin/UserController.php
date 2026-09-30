@@ -27,6 +27,7 @@ class UserController extends Controller
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('username', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");
             });
         }
@@ -59,9 +60,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if (! $request->filled('username') && $request->filled('email')) {
+            $base = \Illuminate\Support\Str::slug(explode('@', (string) $request->email)[0], '_') ?: 'user';
+            $candidate = \Illuminate\Support\Str::lower(substr($base, 0, 45));
+            $counter = 1;
+            while (User::where('username', $candidate)->exists()) {
+                $candidate = \Illuminate\Support\Str::lower(substr($base, 0, 40)) . '_' . $counter++;
+            }
+            $request->merge(['username' => $candidate]);
+        }
+
         // 1. Validate
         $request->validate([
             'name'     => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'lowercase', 'alpha_dash', 'min:3', 'max:50', 'unique:'.User::class],
             'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role'     => ['required', 'in:system_admin,doctor,data_entry'],
@@ -78,6 +90,7 @@ class UserController extends Controller
             // 2. Create User
             User::create([
                 'name'     => $request->name,
+                'username' => strtolower($request->username),
                 'email'    => $request->email,
                 'password' => Hash::make($request->password),
                 'role'     => $request->role,
@@ -112,8 +125,13 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if (! $request->filled('username')) {
+            $request->merge(['username' => $user->username]);
+        }
+
         $validated = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'lowercase', 'alpha_dash', 'min:3', 'max:50', Rule::unique(User::class)->ignore($user->id)],
             'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
             'role'     => ['required', 'in:system_admin,doctor,data_entry'],
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
@@ -127,9 +145,10 @@ class UserController extends Controller
         }
 
         DB::transaction(function () use ($validated, $user) {
-            $user->name  = $validated['name'];
-            $user->email = $validated['email'];
-            $user->role  = $validated['role'];
+            $user->name     = $validated['name'];
+            $user->username = strtolower($validated['username']);
+            $user->email    = $validated['email'];
+            $user->role     = $validated['role'];
 
             if (!empty($validated['password'])) {
                 $user->password = Hash::make($validated['password']);

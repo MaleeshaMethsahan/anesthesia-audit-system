@@ -37,6 +37,22 @@
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
 
+                        <!-- Username -->
+                        <div>
+                            <x-input-label for="username" :value="__('Username')" class="font-bold text-slate-700 dark:text-slate-300" />
+                            <x-text-input id="username" 
+                                          class="block mt-1.5 w-full rounded-xl dark:bg-slate-900 dark:border-slate-700 dark:text-slate-100" 
+                                          type="text" 
+                                          name="username" 
+                                          :value="old('username')" 
+                                          placeholder="e.g. dr_smith or jdoe"
+                                          required autocomplete="off" />
+                            <x-input-error :messages="$errors->get('username')" class="mt-2" />
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                Used for login. Letters, numbers, dashes, and underscores only.
+                            </p>
+                        </div>
+
                         <!-- Email Address -->
                         <div>
                             <x-input-label for="email" :value="__('Email Address')" class="font-bold text-slate-700 dark:text-slate-300" />

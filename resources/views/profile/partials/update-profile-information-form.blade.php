@@ -40,6 +40,23 @@
             @endif
         </div>
 
+        <!-- Username -->
+        <div>
+            <label for="username" class="block font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                {{ __('Username') }} <span class="text-rose-500">*</span>
+            </label>
+            <input id="username" 
+                   name="username" 
+                   type="text" 
+                   class="block w-full rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm py-2.5 px-3.5 transition" 
+                   value="{{ old('username', $user->username) }}" 
+                   required autocomplete="off" />
+            <x-input-error class="mt-2" :messages="$errors->get('username')" />
+            <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                You can use this username or your email address to log in.
+            </p>
+        </div>
+
         <!-- Email Address -->
         <div>
             <label for="email" class="block font-bold text-xs uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">

@@ -66,7 +66,7 @@
                         <input type="text" 
                                name="search" 
                                value="{{ $search }}" 
-                               placeholder="Search user name, email, or IP..." 
+                               placeholder="Search name, username, email, or IP..." 
                                class="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition">
                         <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
@@ -147,8 +147,12 @@
                                                 <div class="font-bold text-slate-900 dark:text-white">
                                                     {{ $log->user?->name ?? 'Deleted User' }}
                                                 </div>
-                                                <div class="text-xs text-slate-400">
-                                                    {{ $log->user?->email ?? 'N/A' }}
+                                                <div class="text-xs text-slate-400 flex items-center gap-1.5 flex-wrap">
+                                                    <span>{{ $log->user?->email ?? 'N/A' }}</span>
+                                                    @if($log->user?->username)
+                                                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                                                        <span class="font-mono text-amber-600 dark:text-amber-400 font-semibold">{{ '@' . $log->user->username }}</span>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
