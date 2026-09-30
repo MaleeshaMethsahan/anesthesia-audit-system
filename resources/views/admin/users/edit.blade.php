@@ -68,23 +68,125 @@
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
 
-                        <!-- Role Selection -->
-                        <div>
-                            <x-input-label for="role" :value="__('Account Role')" class="font-bold text-slate-700 dark:text-slate-300" />
-                            <select id="role" 
-                                    name="role" 
-                                    class="block mt-1.5 w-full border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:border-indigo-500 focus:ring-indigo-500 rounded-xl shadow-sm text-sm">
-                                <option value="doctor" {{ old('role', $user->role) === 'doctor' ? 'selected' : '' }}>Doctor (Clinical Access & Audit Logging)</option>
-                                <option value="data_entry" {{ old('role', $user->role) === 'data_entry' ? 'selected' : '' }}>Data Entry (Audit Records Data Entry)</option>
-                                @if($user->role === 'system_admin' || ($canCreateAdmin ?? \App\Models\User::canCreateAdmin()))
-                                    <option value="system_admin" {{ old('role', $user->role) === 'system_admin' ? 'selected' : '' }}>System Admin (System Administration)</option>
-                                @else
-                                    <option value="system_admin" disabled class="text-slate-400 dark:text-slate-500">System Admin (Maximum limit of 2 reached)</option>
-                                @endif
-                            </select>
+                        <!-- Role Selection (Sliding Segmented Control) -->
+                        <div x-data="{ 
+                            role: '{{ old('role', $user->role) }}',
+                            canAdmin: {{ ($user->role === 'system_admin' || ($canCreateAdmin ?? \App\Models\User::canCreateAdmin())) ? 'true' : 'false' }},
+                            selectRole(r) {
+                                if (r === 'system_admin' && !this.canAdmin) return;
+                                this.role = r;
+                            }
+                        }" class="space-y-2.5">
+                            <input type="hidden" name="role" :value="role" id="role">
+
+                            <div class="flex items-center justify-between">
+                                <label class="font-bold text-slate-700 dark:text-slate-300 text-sm">
+                                    {{ __('Account Role') }}
+                                </label>
+                                <span class="text-[0.7rem] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full transition-colors"
+                                      :class="{
+                                          'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800': role === 'doctor',
+                                          'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800': role === 'data_entry',
+                                          'bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-800': role === 'system_admin'
+                                      }"
+                                      x-text="role === 'doctor' ? 'Doctor Access' : (role === 'data_entry' ? 'Data Entry Access' : 'System Admin Access')">
+                                </span>
+                            </div>
+
+                            <!-- Sliding Segmented Container -->
+                            <div class="relative p-1.5 bg-slate-100 dark:bg-slate-900/90 rounded-2xl border border-slate-200/90 dark:border-slate-800 select-none shadow-inner">
+                                <!-- Animated Sliding Background Pill -->
+                                <div class="absolute top-1.5 bottom-1.5 rounded-xl transition-all duration-300 ease-out shadow-sm pointer-events-none"
+                                     :style="{
+                                         width: 'calc((100% - 12px) / 3)',
+                                         left: role === 'doctor' 
+                                             ? '6px' 
+                                             : (role === 'data_entry' 
+                                                 ? 'calc(6px + (100% - 12px) / 3)' 
+                                                 : 'calc(6px + ((100% - 12px) / 3) * 2)')
+                                     }"
+                                     :class="{
+                                         'bg-white dark:bg-slate-800 border border-blue-200 dark:border-blue-900/60 shadow-blue-500/10': role === 'doctor',
+                                         'bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-900/60 shadow-emerald-500/10': role === 'data_entry',
+                                         'bg-white dark:bg-slate-800 border border-rose-200 dark:border-rose-900/60 shadow-rose-500/10': role === 'system_admin'
+                                     }">
+                                </div>
+
+                                <!-- 3 Buttons Grid -->
+                                <div class="relative grid grid-cols-3 gap-1 z-10">
+                                    <!-- Doctor Button -->
+                                    <button type="button" 
+                                            @click="selectRole('doctor')" 
+                                            class="py-2.5 px-2 sm:px-4 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer focus:outline-none"
+                                            :class="role === 'doctor' ? 'text-blue-600 dark:text-blue-400 font-extrabold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'">
+                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                        </svg>
+                                        <span class="truncate">Doctor</span>
+                                    </button>
+
+                                    <!-- Data Entry Button -->
+                                    <button type="button" 
+                                            @click="selectRole('data_entry')" 
+                                            class="py-2.5 px-2 sm:px-4 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold transition-all duration-200 cursor-pointer focus:outline-none"
+                                            :class="role === 'data_entry' ? 'text-emerald-600 dark:text-emerald-400 font-extrabold' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'">
+                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <span class="truncate">Data Entry</span>
+                                    </button>
+
+                                    <!-- System Admin Button -->
+                                    <button type="button" 
+                                            @click="selectRole('system_admin')" 
+                                            :disabled="!canAdmin"
+                                            class="py-2.5 px-2 sm:px-4 rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-bold transition-all duration-200 focus:outline-none"
+                                            :class="{
+                                                'text-rose-600 dark:text-rose-400 font-extrabold': role === 'system_admin',
+                                                'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 cursor-pointer': canAdmin && role !== 'system_admin',
+                                                'text-slate-400 dark:text-slate-600 opacity-60 cursor-not-allowed': !canAdmin
+                                            }">
+                                        <template x-if="canAdmin">
+                                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                            </svg>
+                                        </template>
+                                        <template x-if="!canAdmin">
+                                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                            </svg>
+                                        </template>
+                                        <span class="truncate">Admin</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Role Context Information Box -->
+                            <div class="p-3 rounded-xl border text-xs transition-colors duration-200"
+                                 :class="{
+                                     'bg-blue-50/70 dark:bg-blue-950/20 border-blue-200/70 dark:border-blue-900/50 text-blue-900 dark:text-blue-300': role === 'doctor',
+                                     'bg-emerald-50/70 dark:bg-emerald-950/20 border-emerald-200/70 dark:border-emerald-900/50 text-emerald-900 dark:text-emerald-300': role === 'data_entry',
+                                     'bg-rose-50/70 dark:bg-rose-950/20 border-rose-200/70 dark:border-rose-900/50 text-rose-900 dark:text-rose-300': role === 'system_admin'
+                                 }">
+                                <p x-show="role === 'doctor'" class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 flex-shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span><strong>Doctor:</strong> Clinical access, anesthesia audit entry & review, patient directory, and automatic staff roster linking.</span>
+                                </p>
+                                <p x-show="role === 'data_entry'" class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 flex-shrink-0 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span><strong>Data Entry:</strong> Dedicated access to create and enter surgery audit records for clinical staff.</span>
+                                </p>
+                                <p x-show="role === 'system_admin'" class="flex items-center gap-2">
+                                    <svg class="w-4 h-4 flex-shrink-0 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span><strong>System Admin:</strong> Full administrative rights, user management, security audit logs, and system settings.</span>
+                                </p>
+                            </div>
+
                             <x-input-error :messages="$errors->get('role')" class="mt-2" />
+
                             @if($user->role !== 'system_admin' && !($canCreateAdmin ?? \App\Models\User::canCreateAdmin()))
-                                <p class="text-xs text-amber-600 dark:text-amber-400 mt-1.5 font-medium">
+                                <p class="text-xs text-amber-600 dark:text-amber-400 mt-1.5 font-medium flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                                     System Administrator limit reached (maximum 2 accounts allowed).
                                 </p>
                             @endif
