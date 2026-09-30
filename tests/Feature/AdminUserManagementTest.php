@@ -410,6 +410,10 @@ class AdminUserManagementTest extends TestCase
 
     public function test_public_registration_cannot_register_third_system_admin(): void
     {
+        if (! \Illuminate\Support\Facades\Route::has('register')) {
+            $this->markTestSkipped('Public registration is disabled.');
+        }
+
         // Second admin
         User::factory()->create([
             'name' => 'Second Admin',

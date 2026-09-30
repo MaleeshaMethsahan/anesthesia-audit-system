@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
         ], [
             'name' => 'admin',
+            'username' => 'admin',
             'password' => 'admin@gmail', // Ensure this is hashed in your User model mutator, or use Hash::make() here if not
             'role' => 'system_admin',
             'email_verified_at' => now(),

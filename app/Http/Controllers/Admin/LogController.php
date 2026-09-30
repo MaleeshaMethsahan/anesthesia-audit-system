@@ -39,6 +39,7 @@ class LogController extends Controller
                 $q->where('ip_address', 'like', "%{$search}%")
                   ->orWhereHas('user', function ($userQuery) use ($search) {
                       $userQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('username', 'like', "%{$search}%")
                                 ->orWhere('email', 'like', "%{$search}%");
                   });
             });
