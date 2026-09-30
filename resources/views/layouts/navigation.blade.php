@@ -332,22 +332,38 @@
                     role="switch"
                     :aria-checked="darkMode"
                     type="button" 
-                    class="relative inline-flex h-7 w-14 items-center rounded-full p-0.5 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ml-1 flex-shrink-0 cursor-pointer shadow-inner select-none"
+                    class="relative inline-flex h-7 w-14 items-center rounded-full p-1 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 ml-1 flex-shrink-0 cursor-pointer shadow-inner select-none"
                     :class="darkMode 
                         ? 'bg-slate-800/90 border border-slate-700/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]' 
                         : 'bg-slate-200/90 border border-slate-300/80 shadow-[inset_0_2px_4px_rgba(0,0,0,0.08)]'"
                     :title="darkMode ? 'Theme: Dark (Click to slide to Light)' : 'Theme: Light (Click to slide to Dark)'"
                     aria-label="Theme Mode Slider">
-                <span class="absolute inset-0 flex items-center justify-between px-1.5 pointer-events-none">
-                    <svg class="w-3 h-3 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <svg class="w-3 h-3 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <!-- Background Track Icons -->
+                <span class="absolute inset-0 flex items-center justify-between px-2 pointer-events-none">
+                    <!-- Left Track Sun (Visible in dark mode as target to click/slide) -->
+                    <svg class="w-3 h-3 transition-opacity duration-300"
+                         :class="darkMode ? 'text-amber-400/60 opacity-100' : 'opacity-0'" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <!-- Right Track Moon (Visible in light mode as target to click/slide) -->
+                    <svg class="w-3 h-3 transition-opacity duration-300"
+                         :class="!darkMode ? 'text-indigo-400/60 opacity-100' : 'opacity-0'" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
                 </span>
-                <span class="inline-flex h-5.5 w-5.5 transform items-center justify-center rounded-full transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-md z-10"
+                <!-- Sliding Knob Thumb with Active Mode Icon -->
+                <span class="inline-flex h-5 w-5 transform items-center justify-center rounded-full transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-md z-10"
                       :class="darkMode 
                         ? 'translate-x-7 bg-slate-900 border border-indigo-500/60 shadow-indigo-500/30' 
                         : 'translate-x-0 bg-white border border-amber-300 shadow-amber-500/20'">
-                    <svg x-show="!darkMode" class="w-3 h-3 text-amber-500 transition-transform duration-300 rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <svg x-show="darkMode" class="w-3 h-3 text-indigo-400 transition-transform duration-300 -rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <svg x-show="!darkMode" class="w-3 h-3 text-amber-500 transition-transform duration-300 rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <svg x-show="darkMode" class="w-3 h-3 text-indigo-400 transition-transform duration-300 -rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
                 </span>
             </button>
         </div>
