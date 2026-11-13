@@ -105,10 +105,8 @@
                             class="inline-flex items-center gap-2 px-6 py-2.5 bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 font-semibold rounded-lg shadow cursor-not-allowed pointer-events-none transition-all duration-300"
                             aria-disabled="true"
                         >
-                            Next — Fill Audit Form
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                            </svg>
+                            Fill Audit Form
+                            
                         </a>
                     </div>
                 </div>
