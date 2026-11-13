@@ -4,10 +4,6 @@
             <h2 class="font-bold text-xl text-gray-800 dark:text-gray-100 leading-tight uppercase tracking-wider">
                 Clinical Analytics Dashboard
             </h2>
-            <a href="{{ route('doctor.audit-form.start') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-indigo-500/20 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                + Add Patient Record
-            </a>
         </div>
     </x-slot>
 
@@ -22,8 +18,8 @@
                 </div>
                 <div class="flex flex-wrap gap-3">
                     <a href="{{ route('doctor.audit-form.start') }}" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        + Add Patient Record
+                        <!-- <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> -->
+                        Add Patient Record
                     </a>
                     <a href="{{ route('doctor.records.index') }}" class="px-5 py-2.5 bg-slate-100 dark:bg-gray-700 hover:bg-slate-200 dark:hover:bg-gray-600 text-slate-800 dark:text-slate-200 font-bold rounded-xl text-xs sm:text-sm shadow transition">
                         View Database
@@ -116,7 +112,7 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <!-- <div class="flex items-center gap-3 w-full sm:w-auto">
                             <form action="{{ route('doctor.records.index') }}" method="GET" class="relative flex-1 sm:w-64">
                                 <input type="text" name="search" placeholder="Search PHN / Patient..." class="w-full bg-slate-100 dark:bg-gray-700 border-none rounded-xl text-xs sm:text-sm py-2.5 pl-3 pr-8 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:ring-2 focus:ring-indigo-500">
                                 <svg class="w-4 h-4 text-slate-400 absolute right-2.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -124,7 +120,7 @@
                             <a href="{{ route('doctor.audit-form.start') }}" class="p-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow transition" title="Add Record">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                             </a>
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- Hero Stat Callouts -->
@@ -230,7 +226,7 @@
                     </div>
 
                     <!-- Right Card 3: Sparkline Multi-KPIs (Comorbidities & Adverse Events) -->
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-slate-200/80 dark:border-gray-700/80 shadow-sm space-y-3">
+                    <!-- <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-slate-200/80 dark:border-gray-700/80 shadow-sm space-y-3">
                         <h4 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-white">Clinical Risk Factors</h4>
                         <div class="grid grid-cols-3 gap-2 text-center">
                             <div class="p-2.5 bg-slate-50 dark:bg-gray-700/40 rounded-xl">
@@ -249,7 +245,7 @@
                                 <span class="inline-block text-xs font-bold text-indigo-500 mt-1">+24%</span>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
 
