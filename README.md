@@ -229,6 +229,3 @@ npm run dev
 - The homepage uses `@vite(...)`, so the frontend build is part of the setup.
 - If you change files in `resources/css` or `resources/js`, rebuild the frontend assets.
 - If the database is changed, rerun the migrations after updating `.env`.
-
-
-Deploy Test
