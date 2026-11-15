@@ -29,9 +29,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        Search Patient by PHN
+                        Search Patient
                     </h3>
-                    <p class="text-blue-100 text-sm mt-1">Type the Patient Hospital Number — matching records appear instantly below.</p>
+                    <p class="text-blue-100 text-sm mt-1">Type a PHN or patient name — matching records appear instantly below.</p>
                 </div>
 
                 <div class="p-6 space-y-5">
@@ -39,7 +39,7 @@
                     {{-- PHN Input with live suggestions --}}
                     <div>
                         <label for="phn-search-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Patient Hospital Number (PHN) <span class="text-red-500">*</span>
+                            Patient Hospital Number (PHN) or Name <span class="text-red-500">*</span>
                         </label>
 
                         <div class="relative">
@@ -58,7 +58,7 @@
                             <input
                                 type="text"
                                 id="phn-search-input"
-                                placeholder="Start typing PHN…"
+                                placeholder="Start typing PHN or patient name…"
                                 autocomplete="off"
                                 class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-base transition"
                             >
@@ -72,7 +72,7 @@
                             ></ul>
                         </div>
 
-                        <p id="min-chars-hint" class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">Type at least 1 character to search.</p>
+                        <p id="min-chars-hint" class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">Type at least 1 character to search by PHN or name.</p>
                     </div>
 
                     {{-- Result Panel (shown after a lookup completes) --}}
@@ -178,6 +178,27 @@
             resultNotFound.classList.add('hidden');
         }
 
+        // ── Highlight matching substring (case-insensitive) ──────────────────
+        function highlightMatch(text, query) {
+            if (!text || !query) return escHtml(text);
+
+            const lowerText  = text.toLowerCase();
+            const lowerQuery = query.toLowerCase();
+            const idx = lowerText.indexOf(lowerQuery);
+
+            if (idx === -1) return escHtml(text);
+
+            const before  = text.substring(0, idx);
+            const match   = text.substring(idx, idx + query.length);
+            const after   = text.substring(idx + query.length);
+
+            return escHtml(before)
+                + '<mark class="bg-amber-200 dark:bg-amber-700 text-inherit rounded-sm px-0.5 font-bold">'
+                + escHtml(match)
+                + '</mark>'
+                + escHtml(after);
+        }
+
         // ── Build suggestion dropdown ─────────────────────────────────────────
         function renderSuggestions(patients) {
             suggestionsList.innerHTML = '';
@@ -186,6 +207,8 @@
                 suggestionsList.classList.add('hidden');
                 return;
             }
+
+            const query = phnInput.value.trim();
 
             patients.forEach(p => {
                 const li = document.createElement('li');
@@ -211,8 +234,8 @@
                             </svg>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">${escHtml(decryptedName)}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">PHN: <span class="font-mono font-medium text-indigo-600 dark:text-indigo-400">${escHtml(p.phn)}</span></p>
+                            <p class="text-sm font-semibold text-gray-800 dark:text-gray-100 truncate">${highlightMatch(decryptedName, query)}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">PHN: <span class="font-mono font-medium text-indigo-600 dark:text-indigo-400">${highlightMatch(p.phn, query)}</span></p>
                         </div>
                     </div>
                     <span class="text-xs px-2 py-0.5 rounded-full flex-shrink-0
