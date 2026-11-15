@@ -91,22 +91,45 @@ class AuditFormController extends Controller
             return response()->json([]);
         }
 
-        // Use Eloquent so the name encryption cast decrypts automatically
-        $patients = Patient::query()
-            ->where('phn', 'like', $query . '%')
+        // 1. Search by partial PHN match (anywhere in the string)
+        $phnMatches = Patient::query()
+            ->where('phn', 'like', '%' . $query . '%')
             ->orderBy('phn')
             ->limit(10)
             ->get(['phn', 'name', 'age', 'sex']);
 
+        // 2. Search by patient name (name is encrypted, so we must
+        //    decrypt all records and filter in PHP)
+        $nameMatches = collect();
+        $lowerQuery = mb_strtolower($query);
+
+        // Only attempt name search if the query looks like it could be a name
+        // (contains at least one letter) to avoid unnecessary decryption work
+        if (preg_match('/[a-zA-Z]/', $query)) {
+            $phnMatchedIds = $phnMatches->pluck('phn')->all();
+
+            // Fetch patients not already matched by PHN, decrypt names, and filter
+            $nameMatches = Patient::query()
+                ->whereNotIn('phn', $phnMatchedIds)
+                ->get(['phn', 'name', 'age', 'sex'])
+                ->filter(function (Patient $patient) use ($lowerQuery) {
+                    return mb_strpos(mb_strtolower($patient->name ?? ''), $lowerQuery) !== false;
+                })
+                ->take(10);
+        }
+
+        // 3. Merge results: PHN matches first, then name matches, limited to 10 total
+        $combined = $phnMatches->concat($nameMatches)->take(10);
+
         return response()->json(
-            $patients->map(function (Patient $patient) {
+            $combined->map(function (Patient $patient) {
                 return [
                     'phn'  => $patient->phn,
                     'name' => $patient->name,   // decrypted via cast
                     'age'  => $patient->age,
                     'sex'  => $patient->sex,
                 ];
-            })
+            })->values()
         );
     }
 
